@@ -1,5 +1,5 @@
-import {join} from 'path';
-import {readInput} from '.';
+import { join } from 'path';
+import { readInput } from '.';
 
 (() => {
     const rawDay = process.argv[2];
@@ -10,10 +10,11 @@ import {readInput} from '.';
 
     const day = ('0' + rawDay).slice(-2);
     const input = readInput(day + (useSample ? '.sample' : ''));
-    console.time('elapsed');
 
     try {
-        require(join(__dirname, '..', 'solutions', day)).default(input);
+        const dayImport = require(join(__dirname, '..', 'solutions', day));
+        console.time('elapsed');
+        dayImport.default(input);
     }
     catch (e) {
         console.error('Execution failed:', e);
