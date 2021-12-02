@@ -1,4 +1,4 @@
-import { getDeltas } from '../utils';
+import {getDeltas} from '../utils';
 
 export default (rawInput: string) => {
     const input = rawInput.split('\n').map(v => +v);

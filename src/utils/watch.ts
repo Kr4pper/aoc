@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { readInput } from '.';
+import {join} from 'path';
+import {readInput, toDay} from './input';
 
 (() => {
     const rawDay = process.argv[2];
@@ -8,7 +8,7 @@ import { readInput } from '.';
     const useSample = process.argv[3] === 'sample' || process.argv[3] === 's';
     if (useSample) console.log('USING SAMPLE INPUT');
 
-    const day = ('0' + rawDay).slice(-2);
+    const day = toDay(rawDay);
     const input = readInput(day + (useSample ? '.sample' : ''));
 
     try {

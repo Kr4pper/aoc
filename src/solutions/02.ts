@@ -1,5 +1,5 @@
 export default (rawInput: string) => {
-    const input = rawInput.split('\r\n').map(v => v.split(' '));
+    const input = rawInput.split('\n').map(v => v.split(' '));
 
     // PART 1
     let horizontal = 0;
