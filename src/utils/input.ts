@@ -2,8 +2,8 @@ import {Axios} from 'axios';
 import {readFileSync} from 'fs';
 import {join} from 'path';
 
-export const readInput = (rawDay: string | number) => readFileSync(
-    join(__dirname, '..', 'input', toDay(rawDay)),
+export const readInput = (fileName) => readFileSync(
+    join(__dirname, '..', 'input', fileName),
     {encoding: 'utf-8'}
 );
 
