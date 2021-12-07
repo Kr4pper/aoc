@@ -1,4 +1,4 @@
-import {strToBin} from '../utils';
+import {strToBin} from './utils';
 
 export default (rawInput: string) => {
     const input = rawInput.split('\n');

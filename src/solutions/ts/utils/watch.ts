@@ -12,7 +12,8 @@ import {readInput, toDay} from './input';
     const input = readInput(day + (useSample ? '.sample' : ''));
 
     try {
-        const dayImport = require(join(__dirname, '..', 'solutions', day));
+        console.log(join(__dirname, '..', day));
+        const dayImport = require(join(__dirname, '..', day));
         console.time('elapsed');
         dayImport.default(input);
     }

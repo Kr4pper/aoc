@@ -1,4 +1,4 @@
-import {memoize} from '../utils';
+import {memoize} from './utils';
 
 export default (rawInput: string) => {
     const input = rawInput.split(',').map(Number);
