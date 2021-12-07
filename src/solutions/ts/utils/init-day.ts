@@ -18,7 +18,7 @@ const template = `export default (rawInput: string) => {
     if (!rawDay) throw new Error('Missing argument for day');
     const day = toDay(rawDay);
 
-    const inputDir = join(__dirname, '..', 'input');
+    const inputDir = join(__dirname, '..', '..', '..', 'input');
     if (!existsSync(inputDir)) {
         console.log('Creating input directory');
         mkdirSync(inputDir);
@@ -33,7 +33,7 @@ const template = `export default (rawInput: string) => {
         writeFileSync(inputFile, data.trimRight());
     }
 
-    const solutionFile = join(__dirname, '..', 'solutions', `${day}.ts`);
+    const solutionFile = join(__dirname, '..', `${day}.ts`);
     if (!existsSync(solutionFile)) {
         console.log('Writing solution file');
         writeFileSync(solutionFile, template);
