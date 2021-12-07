@@ -4,8 +4,10 @@
   "description": "https://adventofcode.com/2021",
   "main": "index.js",
   "scripts": {
-    "watch": "nodemon src/solutions/ts/utils/watch.ts",
-    "init-day": "ts-node src/solutions/ts/utils/init-day.ts"
+    "watch": "nodemon src/solutions/ts/utils/run.ts",
+    "init-day": "ts-node src/solutions/ts/utils/init-day.ts",
+    "build": "tsc --build && xcopy .\\src\\input .\\dist\\input /e /i /y /q",
+    "profile": "node --prof dist/solutions/ts/utils/run.js"
   },
   "devDependencies": {
     "@types/node": "^16.11.10",
