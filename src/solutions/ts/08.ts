@@ -73,7 +73,7 @@ export default (rawInput: string) => {
             let optionsRemoved = false;
 
             const unsolved: [Letter, Set<Letter>][] = Object.entries(options).filter(([_, v]) => v.size > 0).map(([k, v]: [Letter, Set<Letter>]) => [k, new Set(v)]);
-            unsolved.filter(([_, v]) => v.size === 1).forEach(([shuffled, real]) => {
+            unsolved.filter(([_, v]) => v.size === 1).forEach(([shuffled, real]) => { // only remaining option
                 assignResult(options, results, shuffled, [...real][0]);
                 optionsRemoved = true;
             });
@@ -82,11 +82,8 @@ export default (rawInput: string) => {
             if (!twoOptions) break;
 
             let sameTwoOptions = unsolved.filter(([_, v]) => v.size === 2 && setsEqual(twoOptions[1], v));
-            if (sameTwoOptions.length === 2) {
-                const [real1, real2] = [...sameTwoOptions[0][1]];
-                assignResult(options, results, sameTwoOptions[0][0], real1);
-                assignResult(options, results, sameTwoOptions[1][0], real2);
-                alternativesSet.add(real1 + real2);
+            if (sameTwoOptions.length === 2) { // two interchangeable options
+                assignMultiResult(options, results, [sameTwoOptions[0][0], sameTwoOptions[1][0]], [...sameTwoOptions[0][1]]);
                 optionsRemoved = true;
             }
 
@@ -121,7 +118,6 @@ export default (rawInput: string) => {
 
         const toDigits = (output: Sequence[], translations: Translation[]) => {
             for (const translation of translations) {
-                const a = translate(output, translation);
                 const digits = asDigits(translate(output, translation));
                 if (!digits) continue;
 
