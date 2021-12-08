@@ -4,4 +4,6 @@ export * from './get-deltas';
 export * from './lcm';
 export * from './manhattan';
 export * from './memoize';
+export * from './range';
+export * from './set';
 export * from './timing';
