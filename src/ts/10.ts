@@ -12,7 +12,7 @@ export default (rawInput: string) => {
 
     // PART 1
     const SCORE1 = [3, 57, 1197, 25137];
-    const res1 = lines.reduce((sum, line) => {
+    const part1 = lines.reduce((sum, line) => {
         const stack = [];
         for (const char of line) {
             if (OPEN.includes(char)) {
@@ -24,7 +24,6 @@ export default (rawInput: string) => {
         }
         return sum;
     }, 0);
-    console.log('Part 1:', res1);
 
     // PART 2
     const SCORE2 = [1, 2, 3, 4];
@@ -43,5 +42,7 @@ export default (rawInput: string) => {
         }, 0)
         .filter(v => v)
         .sort((a, b) => a - b);
-    console.log('Part 2:', res2[(res2.length - 1) / 2]);
+    const part2 = res2[(res2.length - 1) / 2];
+
+    return [part1, part2];
 };

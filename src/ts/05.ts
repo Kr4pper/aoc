@@ -23,9 +23,11 @@ export default (rawInput: string) => {
     // PART 1
     const grid = new Array(GRID_SIZE * GRID_SIZE).fill(0);
     const nonDiagonal = vents.filter(([x1, y1, x2, y2]) => x1 === x2 || y1 === y2);
-    console.log('Part 1:', applyOverlaps(nonDiagonal, grid));
+    const part1 = applyOverlaps(nonDiagonal, grid);
 
     // PART 2
     const diagonal = vents.filter(([x1, y1, x2, y2]) => x1 !== x2 && y1 !== y2);
-    console.log('Part 2:', applyOverlaps(diagonal, grid));
+    const part2 = applyOverlaps(diagonal, grid);
+
+    return [part1, part2];
 };

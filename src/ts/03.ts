@@ -13,13 +13,14 @@ export default (rawInput: string) => {
     const mostCommonBits = Object.entries(bitCounts).filter(([_, v]) => v > inputLength / 2);
     const gamma = mostCommonBits.reduce((acc, [k]) => acc + Math.pow(2, numBits - +k - 1), 0);
     const epsilon = Math.pow(2, numBits) - gamma - 1;
-    console.log('Part 1:', gamma * epsilon);
+    const part1 = gamma * epsilon;
 
     // PART 2
     const recursiveOxygen = recursiveFilter(input, (zeroPercent, idx) => item => zeroPercent <= 0.5 === (item[idx] === '1'));
     const recursiveCo2 = recursiveFilter(input, (zeroPercent, idx) => item => zeroPercent > 0.5 === (item[idx] === '1'));
+    const part2 = strToBin(recursiveOxygen) * strToBin(recursiveCo2);
 
-    console.log('Part 2:', strToBin(recursiveOxygen) * strToBin(recursiveCo2));
+    return [part1, part2];
 };
 
 const recursiveFilter = (

@@ -11,8 +11,7 @@ export default (rawInput: string) => {
 
     // PART 1
     const distinctLengths = [2, 3, 4, 7];
-    const easyNumberCount = entries.reduce((sum, [_, output]) => sum + output.filter(v => distinctLengths.includes(v.length)).length, 0);
-    console.log('Part 1:', easyNumberCount);
+    const part1 = entries.reduce((sum, [_, output]) => sum + output.filter(v => distinctLengths.includes(v.length)).length, 0);
 
     // PART 2
     const DIGIT_TO_SEGMENTS = {
@@ -59,7 +58,7 @@ export default (rawInput: string) => {
 
     const results = {} as Translation;
     const alternativesSet = new Set<string>();
-    const part2Result = entries.reduce((sum, [input, output]) => {
+    const part2 = entries.reduce((sum, [input, output]) => {
         const options = LETTERS.reduce((res, v) => ({...res, [v]: new Set(LETTERS)}), {} as Options);
         for (const entry of easyEntries([...input, ...output])) {
             const shortRule = weakConstraints[entry.length];
@@ -128,5 +127,5 @@ export default (rawInput: string) => {
         return sum + +toDigits(output, potentialTranslations).join('');
     }, 0);
 
-    console.log('Part 2:', part2Result);
+    return [part1, part2];
 };

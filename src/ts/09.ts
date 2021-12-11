@@ -24,7 +24,7 @@ export default (rawInput: string) => {
             if (adjacent.every(([ya, xa]) => heightAt[ya][xa] > ownHeight)) lowPoints.push([y, x]);
         }
     }
-    console.log('Part 1:', lowPoints.reduce((sum, [y, x]) => sum + 1 + heightAt[y][x], 0));
+    const part1 = lowPoints.reduce((sum, [y, x]) => sum + 1 + heightAt[y][x], 0);
 
     // PART 2
     const getBasin = ([yMin, xMin]: Location) => {
@@ -39,5 +39,7 @@ export default (rawInput: string) => {
         return basin.size;
     };
 
-    console.log('Part 2:', lowPoints.map(getBasin).sort((a, b) => b - a).slice(0, 3).reduce((res, v) => res * v, 1));
+    const part2 = lowPoints.map(getBasin).sort((a, b) => b - a).slice(0, 3).reduce((res, v) => res * v, 1);
+
+    return [part1, part2];
 };

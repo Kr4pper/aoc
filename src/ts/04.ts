@@ -44,9 +44,11 @@ export default (rawInput: string) => {
     const calculateScore = (winningBoard: number[][], lastDrawn: number) => lastDrawn * [...new Set(winningBoard.flat(1))].reduce((sum, v) => sum + v, 0);
 
     const [winner, lastDrawWinner] = getNthBestBoard(bingoBoards, bingoNumbers, 1);
-    console.log('Part 1:', calculateScore(boards[winner], lastDrawWinner));
+    const part1 = calculateScore(boards[winner], lastDrawWinner);
 
     // PART 2
     const [loser, lastDrawLoser] = getNthBestBoard(bingoBoards, bingoNumbers, bingoBoards.length);
-    console.log('Part 2:', calculateScore(boards[loser], lastDrawLoser));
+    const part2 = calculateScore(boards[loser], lastDrawLoser);
+
+    return [part1, part2];
 };

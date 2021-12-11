@@ -4,7 +4,7 @@ import {join} from 'path';
 
 export const readInput = (fileName: string) =>
     readFileSync(
-        join(join(__dirname, '..', '..', '..', 'input', fileName)),
+        join(join(__dirname, '..', '..', 'input', fileName)),
         {encoding: 'utf-8'}
     );
 

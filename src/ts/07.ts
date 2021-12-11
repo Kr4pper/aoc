@@ -5,7 +5,7 @@ export default (rawInput: string) => {
     const linearCost = (positions: number[], target: number) => positions.reduce((sum, v) => sum + Math.abs(v - target), 0);
 
     const median = crabs.sort((a, b) => a - b)[Math.round(crabs.length / 2)]; // median minimizes cost(x) ~ x
-    console.log('Part 1:', linearCost(crabs, median));
+    const part1 = linearCost(crabs, median);
 
     // PART 2
     const gaussianSum = (n: number) => n * (n + 1) / 2;
@@ -13,5 +13,7 @@ export default (rawInput: string) => {
 
     const mean = crabs.reduce((sum, v) => sum + v, 0) / crabs.length; // mean minimizes cost(x) ~ x²
     const candidates = [Math.floor(mean), Math.ceil(mean)]; // either of these minimizes cost(x) ~ x² + x
-    console.log('Part 2:', Math.min(...candidates.map(gaussianCost(crabs))));
+    const part2 = Math.min(...candidates.map(gaussianCost(crabs)));
+
+    return [part1, part2];
 };

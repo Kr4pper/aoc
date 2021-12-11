@@ -51,8 +51,9 @@ export default (rawInput: string) => {
         }
         return flashCount;
     };
-    console.log('Part 1:', simulate(initialState, 100));
 
-    // PART 2
-    console.log('Part 2:', simulate(initialState, 1000));
+    return [
+        simulate(initialState, 100),
+        simulate(initialState, 1000) + 100,
+    ];
 };

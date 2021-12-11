@@ -4,15 +4,18 @@
   "description": "https://adventofcode.com/2021",
   "main": "index.js",
   "scripts": {
-    "watch": "nodemon src/solutions/ts/utils/run.ts",
-    "init-day": "ts-node src/solutions/ts/utils/init-day.ts",
+    "watch": "nodemon src/ts/utils/run-cli.ts",
+    "init": "ts-node src/ts/utils/init-day.ts",
     "build": "tsc --build && xcopy .\\src\\input .\\dist\\input /e /i /y /q",
-    "profile": "node --prof dist/solutions/ts/utils/run.js"
+    "profile": "node --prof dist/ts/utils/run.js",
+    "test": "ts-node src/ts/utils/test.ts"
   },
   "devDependencies": {
     "@types/node": "^16.11.10",
+    "@types/table": "^6.3.2",
     "axios": "^0.24.0",
     "nodemon": "^2.0.15",
+    "table": "^6.7.5",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   },

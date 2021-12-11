@@ -13,9 +13,8 @@ export default (rawInput: string) => {
 
     const numeric = (fishes: number[], days: number) => fishes.reduce((sum, fish) => sum + fromTimer(days - fish - 1), 0);
 
-    // PART 1
-    console.log('Part 1:', numeric(input, 80));
-
-    // PART 2
-    console.log('Part 2:', numeric(input, 256));
+    return [
+        numeric(input, 80),
+        numeric(input, 256),
+    ];
 };

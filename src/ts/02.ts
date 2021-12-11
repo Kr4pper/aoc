@@ -20,7 +20,7 @@ export default (rawInput: string) => {
 
         }
     }
-    console.log('Part 1:', horizontal * depth);
+    const part1 = horizontal * depth;
 
     // PART 2
     horizontal = 0;
@@ -43,5 +43,7 @@ export default (rawInput: string) => {
 
         }
     }
-    console.log('Part 2:', horizontal * depth);
+    const part2 = horizontal * depth;
+
+    return [part1, part2];
 };
