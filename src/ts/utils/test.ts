@@ -19,10 +19,10 @@ const toPrecision = (ms: number, precision = 4) => {
 };
 
 (() => {
-    const runs = process.argv[2] ? +process.argv[2] : 1;
-    if (typeof runs !== 'number') throw new Error('Invalid argument for #runs');
+    const runs = process.argv[2] ? parseInt(process.argv[2]) : 1;
+    if (typeof runs !== 'number' || Number.isNaN(runs) || runs < 1) throw new Error(`Invalid argument for #runs: "${process.argv[2]}"`);
 
-    if (runs > 1) console.log(`Performing ${runs} runs`);
+    console.log(`Performing ${runs} test run${runs > 1 ? 's' : ''}`);
 
     const expected = readFileSync(
         join(join(__dirname, '..', '..', 'solutions.txt')),
@@ -39,10 +39,7 @@ const toPrecision = (ms: number, precision = 4) => {
             results.add(`${part1},${part2}`);
             totalMs += elapsedMs;
         }
-        if (results.size > 1) {
-            console.error(`Diverging results for day ${idx + 1}: ${[...results]}`);
-            throw new Error(`Diverging results for day ${idx + 1}: ${[...results]}`);
-        };
+        if (results.size > 1) throw new Error(`Diverging results for day ${idx + 1}: ${[...results].join(' - ')}`);
         return [...[...results][0].split(',').map(Number), totalMs / runs];
     });
 
