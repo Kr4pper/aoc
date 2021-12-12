@@ -24,12 +24,14 @@ const toPrecision = (ms: number, precision = 4) => {
 
     console.log(`Performing ${runs} test run${runs > 1 ? 's' : ''}`);
 
-    const expected = readFileSync(
-        join(join(__dirname, '..', '..', 'solutions.txt')),
-        {encoding: 'utf-8'}
+    const data = readFileSync(
+        join(__dirname, '..', '..', 'data.txt'),
+        {encoding: 'utf-8'},
     )
         .split('\n')
-        .map(line => line.split(' ').map(Number));
+        .map(line => line.split(' '));
+    const expected = data.map(([part1, part2]) => [part1, part2].map(Number));
+    const descriptions = data.map(([_, __, ...description]) => description.join(' '));
 
     const actual = Array.from({length: expected.length}, (_, idx) => {
         const results = new Set<string>();
@@ -45,6 +47,7 @@ const toPrecision = (ms: number, precision = 4) => {
 
     const results = actual.map(([actual1, actual2, elapsedMs], idx) => {
         const [expected1, expected2] = expected[idx];
+        const a = expected[idx];
 
         const res = [idx + 1, actual1 === expected1, actual2 === expected2, elapsedMs];
         if (!res[1]) fail(idx + 1, 1, expected1, actual1);
@@ -61,7 +64,7 @@ const toPrecision = (ms: number, precision = 4) => {
     const table = createTable(
         [
             ['Day', 'Part 1', 'Part 2', 'Elapsed (ms)'],
-            ...results.map(([day, part1, part2, ms]) => [day, part1 ? CHECK : CROSS, part2 ? CHECK : CROSS, toPrecision(ms)]),
+            ...results.map(([day, part1, part2, ms], idx) => [`${day} - ${descriptions[idx]}`, part1 ? CHECK : CROSS, part2 ? CHECK : CROSS, toPrecision(ms)]),
             ['', '', 'Sum', toPrecision(totalElapsed)],
             ['', '', 'Avg', toPrecision(totalElapsed / actual.length)],
         ],

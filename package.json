@@ -4,7 +4,7 @@
   "description": "https://adventofcode.com/2021",
   "main": "index.js",
   "scripts": {
-    "watch": "nodemon src/ts/utils/run-cli.ts",
+    "watch": "nodemon -e ts,sample src/ts/utils/run-cli.ts",
     "init": "ts-node src/ts/utils/init-day.ts",
     "build": "tsc --build && xcopy .\\src\\input .\\dist\\input /e /i /y /q",
     "profile": "node --prof dist/ts/utils/run.js",
