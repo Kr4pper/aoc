@@ -10,7 +10,7 @@ export const readInput = (fileName: string) =>
 
 export const fetchInput = (rawDay: string | number) => new Axios({}).get(
     `https://adventofcode.com/2021/day/${+rawDay}/input`,
-    {headers: {Cookie: `session=${readFileSync(join(__dirname, '..', '..', '..', '..', 'TOKEN'))};`}}
+    {headers: {Cookie: `session=${readFileSync(join(__dirname, '..', '..', '..', 'TOKEN'))};`}}
 );
 
 export const toDay = (rawDay: string | number) => ('0' + rawDay).slice(-2);

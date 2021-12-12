@@ -12,3 +12,4 @@ import {run} from './run';
     console.log('Part 2:', part2);
     console.log('Elapsed (ms):', elapsedMs);
 })();
+ 

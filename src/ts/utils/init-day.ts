@@ -6,10 +6,10 @@ const template = `export default (rawInput: string) => {
     const input = rawInput.split('\\n');
 
     // PART 1
-    console.log('Part 1:');
 
     // PART 2
-    console.log('Part 2:');
+
+    return [];
 };
 `;
 
@@ -18,7 +18,7 @@ const template = `export default (rawInput: string) => {
     if (!rawDay) throw new Error('Missing argument for day');
     const day = toDay(rawDay);
 
-    const inputDir = join(__dirname, '..', '..', '..', 'input');
+    const inputDir = join(__dirname, '..', '..', 'input');
     if (!existsSync(inputDir)) {
         console.log('Creating input directory');
         mkdirSync(inputDir);

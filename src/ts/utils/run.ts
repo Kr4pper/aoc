@@ -16,8 +16,8 @@ export const run = (
     const input = readInput(_day + (useSample ? '.sample' : ''));
 
     const start = process.hrtime();
-    const res = dayFn(input);
+    const [part1, part2] = dayFn(input);
     const end = process.hrtime();
 
-    return [...res, elapsedMs(start, end)];
+    return [part1, part2, elapsedMs(start, end)];
 };
