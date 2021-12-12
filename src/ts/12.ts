@@ -1,5 +1,3 @@
-import {countReset} from 'console';
-
 export default (rawInput: string) => {
     type Vertices = {[key: string]: string[];};
 
@@ -22,7 +20,6 @@ export default (rawInput: string) => {
 
         const addEdge = (start: string, end: string) => {
             if (end === START) return;
-            //if (start === end) return;
 
             newGraph[start] = newGraph[start] || [];
             newGraph[start].push(end);
@@ -46,64 +43,27 @@ export default (rawInput: string) => {
         acc[p]++;
         return acc;
     }, {});
-    const weights: {[key: string]: {[key: string]: number;};} = Object.entries(replaceBigCaves(graph)).reduce((acc, [edge, paths]) => ({...acc, [edge]: counter(paths)}), {});
-    console.log(weights);
+    type Weights = {[key: string]: {[key: string]: number;};};
+    const weights: Weights = Object.entries(replaceBigCaves(graph)).reduce((acc, [edge, paths]) => ({...acc, [edge]: counter(paths)}), {});
 
-    const walk = (
-        cavegraph: {[key: string]: {[key: string]: number;};},
-        at: string,
-        seen: string[],
-        visitedTwice = false,
-        depth = 0,
-        track = []
-    ) => {
-        if (at === END) {
-            console.log('>>', track);
-            return 1;
-        }
-
-        const addToSeen = !seen.includes(at);
-        if (addToSeen) seen.push(at);
-
-        let paths = 0;
-        for (const [adj, count] of Object.entries(cavegraph[at])) {
-            //console.log('  '.repeat(depth), at, adj, count, seen);
-            if (seen.includes(adj)) {
-                if (visitedTwice) continue;
-                console.log(count);
-                paths += count * walk(cavegraph, adj, seen, true, depth + 1, [...track, at]);
-            }
-            else {
-                console.log(count);
-                paths += count * walk(cavegraph, adj, seen, visitedTwice, depth + 1, [...track, at]);
-            }
-        }
-
-        if (addToSeen) seen.pop();
-        return paths;
-    };
-
-    const visit = (visited: string[], position: string) => position.charCodeAt(0) <= LAST_UPPERCASE_LETTER ? visited : [...visited, position];
-
-    const crawl = (edges: Vertices, start: string, visited: string[], track = []) =>
+    const crawl = (edges: Weights, start: string, visited: string[], track = []) =>
         start === END
             ? 1
-            : edges[start]
-                .filter(end => !visited.includes(end)  || end.charCodeAt(0) <= LAST_UPPERCASE_LETTER)
-                .reduce((sum, end) => sum + crawl(edges, end, visit(visited, start), [...track, start]), 0);
+            : Object.entries(edges[start])
+                .filter(([end]) => !visited.includes(end))
+                .reduce((sum, [end, weight]) => sum + weight * crawl(edges, end, [...visited, end], [...track, start]), 0);
 
-    const advancedCrawl = (edges: Vertices, start: string, visited: string[], bonusVisitUsed = false, track = []) =>
+    const advancedCrawl = (edges: Weights, start: string, visited: string[], bonusVisitUsed = false, track = []) =>
         start === END
             ? 1
             : bonusVisitUsed
                 ? crawl(edges, start, visited)
-                : edges[start]
-                    .filter(end => end !== START)
-                    .reduce((sum, end) => sum + advancedCrawl(edges, end, visit(visited, start), visited.includes(end), [...track, start]), 0);
+                : Object.entries(edges[start])
+                    .filter(([end]) => end !== START)
+                    .reduce((sum, [end, weight]) => sum + weight * advancedCrawl(edges, end, [...visited, end], visited.includes(end), [...track, start]), 0);
 
     return [
-        //crawl(graph, START, []),
-        advancedCrawl(graph, START, []),
-        walk(weights, START, [], true),
+        crawl(weights, START, []),
+        advancedCrawl(weights, START, []),
     ];
 };
