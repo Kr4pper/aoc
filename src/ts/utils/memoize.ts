@@ -1,7 +1,7 @@
 export const memoize = <T, Arg extends string | number>(
     wrapped: (arg: Arg) => T
 ) => {
-    const cache: {[K in (string | number)]} = {};
+    const cache: {[K in (string | number)]: T} = {};
 
     return (arg: Arg): T => {
         if (cache[arg]) return cache[arg];
@@ -12,11 +12,11 @@ export const memoize = <T, Arg extends string | number>(
     };
 };
 
-export const memoizeBy = <T, Args extends any[]>(
-    getKey: (args: Args) => string | number,
+export const memoizeBy = <T, Args extends any[], K extends string | number>(
+    getKey: (args: Args) => K,
     wrapped: (args: Args) => T
 ) => {
-    const cache = {};
+    const cache: {[key in K]?: T} = {};
 
     return (args: Args): T => {
         const key = getKey(args);

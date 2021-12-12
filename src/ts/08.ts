@@ -102,7 +102,7 @@ export default (rawInput: string) => {
             return {...res, [aIdx]: b, [bIdx]: a};
         }, results));
 
-        const translate = (output: Sequence[], translation: Translation) => output.reduce((res, v) => [...res, new Set(v.split('').map(c => translation[c]))], []);
+        const translate = (output: Sequence[], translation: Translation) => output.reduce((res, v) => [...res, new Set(v.split('').map(c => translation[c as Letter]))], []);
 
         const asDigits = (sequences: Set<Letter>[]) => {
             const digits = [];

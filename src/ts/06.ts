@@ -5,7 +5,7 @@ export default (rawInput: string) => {
 
     // assumes that every newly created lanternfish is a "0"
     const fromTimer = memoize(
-        (remainingDays: number, totalFishes = 0) =>
+        (remainingDays: number, totalFishes = 0): number =>
             remainingDays < 0
                 ? 1 // negative fish will not breed in time and thus have a weight of 1
                 : totalFishes + fromTimer(remainingDays - 7) + fromTimer(remainingDays - 9)

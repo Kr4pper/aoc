@@ -8,9 +8,9 @@ export const readInput = (fileName: string) =>
         {encoding: 'utf-8'}
     );
 
-export const fetchInput = (rawDay: string | number) => new Axios({}).get(
+export const fetchInput = (rawDay: string | number) => new Axios({}).get<string>(
     `https://adventofcode.com/2021/day/${+rawDay}/input`,
     {headers: {Cookie: `session=${readFileSync(join(__dirname, '..', '..', '..', 'TOKEN'))};`}}
 );
 
-export const toDay = (rawDay: string | number) => ('0' + rawDay).slice(-2);
+export const toDay = (rawDay: string | number) => ('' + rawDay).padStart(2, '0');

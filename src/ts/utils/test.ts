@@ -1,6 +1,7 @@
 import {table as createTable} from 'table';
 import {readFileSync} from 'fs';
 import {join} from 'path';
+import {toDay} from './input';
 import {run} from './run';
 
 const RESET = '\x1b[0m';
@@ -11,7 +12,7 @@ const CHECK = `${FG_GREEN}✓${RESET}`;
 const CROSS = `${FG_RED}X${RESET}`;
 
 const fail = (day: number, part: 1 | 2, expected: number, actual: number) =>
-    console.error(`${FG_RED}Day ${day} (Part ${part}): Expected ${expected} but got ${actual}.${RESET}`);
+    console.error(`${FG_RED}Day ${day} (Part ${part}): Expected ${expected} but got ${actual}${RESET}`);
 
 const toPrecision = (ms: number, precision = 4) => {
     const [fullMs, splitMs] = `${ms}`.split('.');
@@ -41,13 +42,17 @@ const toPrecision = (ms: number, precision = 4) => {
             results.add(`${part1},${part2}`);
             totalMs += elapsedMs;
         }
+
         if (results.size > 1) throw new Error(`Diverging results for day ${idx + 1}: ${[...results].join(' - ')}`);
-        return [...[...results][0].split(',').map(Number), totalMs / runs];
+
+        return [
+            ...[...results][0].split(',').map(Number),
+            totalMs / runs,
+        ];
     });
 
     const results = actual.map(([actual1, actual2, elapsedMs], idx) => {
         const [expected1, expected2] = expected[idx];
-        const a = expected[idx];
 
         const res = [idx + 1, actual1 === expected1, actual2 === expected2, elapsedMs];
         if (!res[1]) fail(idx + 1, 1, expected1, actual1);
@@ -61,10 +66,16 @@ const toPrecision = (ms: number, precision = 4) => {
     const failure = results.reduce((sum, [_, part1, part2]) => sum + +!part1 + +!part2, 0);
 
     const totalElapsed = results.reduce((sum, v) => sum + v[3], 0);
+    const maxDescriptionLength = descriptions.map(text => text.length).sort((a, b) => b - a)[0];
     const table = createTable(
         [
             ['Day', 'Part 1', 'Part 2', 'Elapsed (ms)'],
-            ...results.map(([day, part1, part2, ms], idx) => [`${day} - ${descriptions[idx]}`, part1 ? CHECK : CROSS, part2 ? CHECK : CROSS, toPrecision(ms)]),
+            ...results.map(([day, part1, part2, ms], idx) => [
+                `${toDay(day)} - ${descriptions[idx]}`.padEnd(maxDescriptionLength + 5, ' '),
+                part1 ? CHECK : CROSS,
+                part2 ? CHECK : CROSS,
+                toPrecision(ms),
+            ]),
             ['', '', 'Sum', toPrecision(totalElapsed)],
             ['', '', 'Avg', toPrecision(totalElapsed / actual.length)],
         ],

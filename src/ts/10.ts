@@ -10,12 +10,14 @@ export default (rawInput: string) => {
     const OPEN = Object.keys(REVERSE);
     const CLOSE = Object.values(REVERSE);
 
+    const isOpeningParanthesis = (char: string): char is keyof typeof REVERSE => OPEN.includes(char);
+
     // PART 1
     const SCORE1 = [3, 57, 1197, 25137];
     const part1 = lines.reduce((sum, line) => {
         const stack = [];
         for (const char of line) {
-            if (OPEN.includes(char)) {
+            if (isOpeningParanthesis(char)) {
                 stack.push(REVERSE[char]);
                 continue;
             }
@@ -31,8 +33,8 @@ export default (rawInput: string) => {
         .map(line => {
             const stack = [];
             for (const char of line) {
-                if (OPEN.includes(char)) {
-                    stack.push(REVERSE[char]);
+                if (isOpeningParanthesis(char)) {
+                    stack.push(REVERSE[char as keyof typeof REVERSE]);
                     continue;
                 }
 

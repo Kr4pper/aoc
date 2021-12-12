@@ -5,7 +5,10 @@
         "module": "CommonJS",
         "target": "ESNext",
         "skipLibCheck": true,
-        "downlevelIteration": true
+        "downlevelIteration": true,
+        "noImplicitAny": true
     },
-    "exclude": ["**/node_modules"]
+    "exclude": [
+        "**/node_modules"
+    ]
 }

@@ -1,4 +1,4 @@
-import {strToBin} from './utils';
+import {Hashtable, binaryStrToInt} from './utils';
 
 export default (rawInput: string) => {
     const input = rawInput.split('\n');
@@ -9,7 +9,7 @@ export default (rawInput: string) => {
     const bitCounts = input.reduce((acc, binString) => {
         binString.split('').map(Number).forEach((bit, idx) => acc[idx] = (acc[idx] || 0) + bit);
         return acc;
-    }, {});
+    }, {} as Hashtable<number>);
     const mostCommonBits = Object.entries(bitCounts).filter(([_, v]) => v > inputLength / 2);
     const gamma = mostCommonBits.reduce((acc, [k]) => acc + Math.pow(2, numBits - +k - 1), 0);
     const epsilon = Math.pow(2, numBits) - gamma - 1;
@@ -18,7 +18,7 @@ export default (rawInput: string) => {
     // PART 2
     const recursiveOxygen = recursiveFilter(input, (zeroPercent, idx) => item => zeroPercent <= 0.5 === (item[idx] === '1'));
     const recursiveCo2 = recursiveFilter(input, (zeroPercent, idx) => item => zeroPercent > 0.5 === (item[idx] === '1'));
-    const part2 = strToBin(recursiveOxygen) * strToBin(recursiveCo2);
+    const part2 = binaryStrToInt(recursiveOxygen) * binaryStrToInt(recursiveCo2);
 
     return [part1, part2];
 };

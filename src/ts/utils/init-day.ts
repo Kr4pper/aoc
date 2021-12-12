@@ -27,10 +27,10 @@ const template = `export default (rawInput: string) => {
     const inputFile = join(inputDir, day);
     if (!existsSync(inputFile)) {
         console.log('Fetching input data');
-        const data = (await fetchInput(day)).data as string;
+        const data = (await fetchInput(day)).data;
 
         console.log('Writing Input file');
-        writeFileSync(inputFile, data.trimRight());
+        writeFileSync(inputFile, data.trimEnd());
     }
 
     const solutionFile = join(__dirname, '..', `${day}.ts`);
