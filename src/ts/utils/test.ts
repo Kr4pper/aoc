@@ -66,6 +66,7 @@ const toPrecision = (ms: number, precision = 4) => {
     const failure = results.reduce((sum, [_, part1, part2]) => sum + +!part1 + +!part2, 0);
 
     const totalElapsed = results.reduce((sum, v) => sum + v[3], 0);
+    const averageElapsed = totalElapsed / actual.length;
     const maxDescriptionLength = descriptions.map(text => text.length).sort((a, b) => b - a)[0];
     const table = createTable(
         [
@@ -74,10 +75,10 @@ const toPrecision = (ms: number, precision = 4) => {
                 `${toDay(day)} - ${descriptions[idx]}`.padEnd(maxDescriptionLength + 5, ' '),
                 part1 ? CHECK : CROSS,
                 part2 ? CHECK : CROSS,
-                toPrecision(ms),
+                ms > averageElapsed ? `${FG_RED}${toPrecision(ms)}${RESET}` : toPrecision(ms),
             ]),
             ['', '', 'Sum', toPrecision(totalElapsed)],
-            ['', '', 'Avg', toPrecision(totalElapsed / actual.length)],
+            ['', '', 'Avg', toPrecision(averageElapsed)],
         ],
         {
             columns: [

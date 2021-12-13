@@ -14,8 +14,6 @@ export default (rawInput: string) => {
         ];
     };
 
-    const [dots, folds] = parseInput(rawInput);
-
     const applyFold = (dots: Dot[], [type, value]: Fold): Dot[] => {
         const next = new Set<string>();
         switch (type) {
@@ -37,14 +35,17 @@ export default (rawInput: string) => {
         return [...next].map(v => v.split(',').map(Number) as Dot);
     };
 
+    const [dots, folds] = parseInput(rawInput);
     const foldedSet = new Set(folds.reduce(applyFold, dots).map(([x, y]) => `${x},${y}`));
 
-    for (let y = 0; y < 6; y++) {
-        let line = '';
-        for (let x = 0; x < 40; x++) {
-            line += foldedSet.has(`${x},${y}`) ? 'X' : ' ';
+    if (false) {
+        for (let y = 0; y < 7; y++) {
+            let line = '';
+            for (let x = 0; x < 150; x++) {
+                line += foldedSet.has(`${x},${y}`) ? 'X' : ' ';
+            }
+            console.log(line);
         }
-        //console.log(line);
     }
 
     return [

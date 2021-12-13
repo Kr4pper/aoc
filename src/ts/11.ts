@@ -1,15 +1,15 @@
 export default (rawInput: string) => {
-    const initialState = rawInput.split('\n').map(line => line.split('').map(Number));
+    const grid = rawInput.split('\n').map(line => line.split('').map(Number));
 
-    const HEIGHT = initialState.length;
-    const WIDTH = initialState[0].length;
+    const HEIGHT = grid.length;
+    const WIDTH = grid[0].length;
     const FLASH_MIN = 10;
 
     // PART 1
-    type Location = [number, number];
+    type Location = [y: number, x: number];
     const getAdjacentLocations = ([y, x]: Location) => {
         const adjacent: Location[] = [];
-        if (y > 0) adjacent.push([y - 1, x]); // vertical
+        if (y > 0) adjacent.push([y - 1, x]);
         if (y < HEIGHT - 1) adjacent.push([y + 1, x]);
         if (x > 0) adjacent.push([y, x - 1]); // horizontal
         if (x < WIDTH - 1) adjacent.push([y, x + 1]);
@@ -20,8 +20,6 @@ export default (rawInput: string) => {
         return adjacent;
     };
 
-    const increment = (grid: number[][], [y, x]: Location): Location[] => ++grid[y][x] >= FLASH_MIN ? [[y, x]] : [];
-
     const simulate = (grid: number[][], maxIterations: number) => {
         let flashCount = 0;
         for (let i = 1; i <= maxIterations; i++) {
@@ -29,16 +27,20 @@ export default (rawInput: string) => {
             const flashQueue: Location[] = [];
 
             for (let y = 0; y < HEIGHT; y++) {
-                for (let x = 0; x < WIDTH; x++) flashQueue.push(...increment(grid, [y, x]));
+                for (let x = 0; x < WIDTH; x++) {
+                    if (++grid[y][x] >= FLASH_MIN) flashQueue.push([y, x]);
+                }
             }
 
             while (flashQueue.length) {
                 const flash = flashQueue.pop();
                 const flashKey = `${flash[0]},${flash[1]}`;
                 if (flashed.has(flashKey)) continue;
-
-                for (const [y, x] of getAdjacentLocations(flash)) flashQueue.push(...increment(grid, [y, x]));
                 flashed.add(flashKey);
+
+                for (const [y, x] of getAdjacentLocations(flash)) {
+                    if (++grid[y][x] >= FLASH_MIN) flashQueue.push([y, x]);
+                }
             }
 
             flashed.forEach(flash => {
@@ -53,7 +55,7 @@ export default (rawInput: string) => {
     };
 
     return [
-        simulate(initialState, 100),
-        simulate(initialState, 1000) + 100,
+        simulate(grid, 100),
+        simulate(grid, 1000) + 100,
     ];
 };
