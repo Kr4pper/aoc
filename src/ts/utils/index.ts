@@ -1,6 +1,7 @@
 export * from './binary';
 export * from './gcd';
 export * from './get-deltas';
+export * from './grid';
 export * from './hashtable';
 export * from './lcm';
 export * from './manhattan';

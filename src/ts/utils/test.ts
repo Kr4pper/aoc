@@ -75,7 +75,7 @@ const toPrecision = (ms: number, precision = 4) => {
                 `${toDay(day)} - ${descriptions[idx]}`.padEnd(maxDescriptionLength + 5, ' '),
                 part1 ? CHECK : CROSS,
                 part2 ? CHECK : CROSS,
-                ms > averageElapsed ? `${FG_RED}${toPrecision(ms)}${RESET}` : toPrecision(ms),
+                ms > 2 * averageElapsed ? `${FG_RED}${toPrecision(ms)}${RESET}` : toPrecision(ms),
             ]),
             ['', '', 'Sum', toPrecision(totalElapsed)],
             ['', '', 'Avg', toPrecision(averageElapsed)],
