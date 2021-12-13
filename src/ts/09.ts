@@ -5,7 +5,6 @@ export default (rawInput: string) => {
     const WIDTH = heightAt[0].length;
     const PLATEAU = 9;
 
-    // PART 1
     type Location = [number, number];
     const getAdjacentLocations = ([y, x]: Location) => {
         const adjacent: Location[] = [];
@@ -24,9 +23,7 @@ export default (rawInput: string) => {
             if (adjacent.every(([ya, xa]) => heightAt[ya][xa] > ownHeight)) lowPoints.push([y, x]);
         }
     }
-    const part1 = lowPoints.reduce((sum, [y, x]) => sum + 1 + heightAt[y][x], 0);
 
-    // PART 2
     const getBasin = ([yMin, xMin]: Location) => {
         const basin = new Set<string>([`${yMin},${xMin}`]);
         let added: Location[] = [[yMin, xMin]];
@@ -39,7 +36,8 @@ export default (rawInput: string) => {
         return basin.size;
     };
 
-    const part2 = lowPoints.map(getBasin).sort((a, b) => b - a).slice(0, 3).reduce((res, v) => res * v, 1);
-
-    return [part1, part2];
+    return [
+        lowPoints.reduce((sum, [y, x]) => sum + 1 + heightAt[y][x], 0),
+        lowPoints.map(getBasin).sort((a, b) => b - a).slice(0, 3).reduce((res, v) => res * v, 1),
+    ];
 };
