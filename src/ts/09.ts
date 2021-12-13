@@ -1,43 +1,49 @@
 export default (rawInput: string) => {
-    const heightAt = rawInput.split('\n').map(line => line.split('').map(Number));
+    const lines = rawInput.split('\n');
 
-    const HEIGHT = heightAt.length;
-    const WIDTH = heightAt[0].length;
+    const HEIGHT = lines.length + 2;
+    const WIDTH = lines[0].length + 2;
     const PLATEAU = 9;
 
-    type Location = [number, number];
-    const getAdjacentLocations = ([y, x]: Location) => {
-        const adjacent: Location[] = [];
-        if (y > 0) adjacent.push([y - 1, x]);
-        if (y < HEIGHT - 1) adjacent.push([y + 1, x]);
-        if (x > 0) adjacent.push([y, x - 1]);
-        if (x < WIDTH - 1) adjacent.push([y, x + 1]);
-        return adjacent;
-    };
+    const heightAt = [
+        new Array(HEIGHT).fill(PLATEAU),
+        ...lines.map(line => [PLATEAU, ...line.split('').map(Number), PLATEAU]),
+        new Array(HEIGHT).fill(PLATEAU),
+    ];
 
-    const lowPoints: Location[] = [];
-    for (let y = 0; y < HEIGHT; y++) {
-        for (let x = 0; x < WIDTH; x++) {
-            const ownHeight = heightAt[y][x];
-            const adjacent = getAdjacentLocations([y, x]);
-            if (adjacent.every(([ya, xa]) => heightAt[ya][xa] > ownHeight)) lowPoints.push([y, x]);
+    type Location = [number, number];
+    const getAdjacentLocations = ([y, x]: Location): Location[] => [[y - 1, x], [y + 1, x], [y, x - 1], [y, x + 1]];
+
+    const visited = new Array(HEIGHT).fill(0).map(() => new Array(WIDTH).fill(false));
+    const basins: [number, number][] = [];
+    for (let yStart = 1; yStart < HEIGHT - 1; yStart++) {
+        for (let xStart = 1; xStart < WIDTH - 1; xStart++) {
+            if (visited[yStart][xStart]) continue;
+            if (heightAt[yStart][xStart] === PLATEAU) continue;
+
+            let size = 0;
+            let min = PLATEAU;
+            const flood = ([y, x]: Location): void => {
+                if (y === 0 || x === 0 || y === HEIGHT - 1 || x === WIDTH - 1) return;
+                if (visited[y][x]) return;
+
+                const height = heightAt[y][x];
+                if (heightAt[y][x] === PLATEAU) return;
+
+                min = Math.min(min, height);
+                size++;
+                visited[y][x] = true;
+
+                getAdjacentLocations([y, x]).forEach(flood);
+            };
+
+            flood([yStart, xStart]);
+            basins.push([size, min]);
         }
     }
 
-    const getBasin = ([yMin, xMin]: Location) => {
-        const basin = new Set<string>([`${yMin},${xMin}`]);
-        let added: Location[] = [[yMin, xMin]];
-
-        do {
-            added = added.map(([y, x]) => getAdjacentLocations([y, x]).filter(([yNext, xNext]) => heightAt[yNext][xNext] !== PLATEAU && !basin.has(`${yNext},${xNext}`))).flat();
-            added.forEach(([y, x]) => basin.add(`${y},${x}`));
-        } while (added.length);
-
-        return basin.size;
-    };
-
     return [
-        lowPoints.reduce((sum, [y, x]) => sum + 1 + heightAt[y][x], 0),
-        lowPoints.map(getBasin).sort((a, b) => b - a).slice(0, 3).reduce((res, v) => res * v, 1),
+        basins.reduce((sum, b) => sum + b[1], basins.length),
+        basins.map(b => b[0]).sort((a, b) => b - a).slice(0, 3).reduce((res, v) => res * v, 1),
     ];
 };
