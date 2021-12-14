@@ -43,8 +43,7 @@ export default (rawInput: string) => {
     };
 
     const counter = (paths: string[]) => paths.reduce((acc, p) => {
-        acc[p] = acc[p] || 0;
-        acc[p]++;
+        acc[p] = (acc[p] || 0) + 1;
         return acc;
     }, {} as Hashtable<number>);
 
