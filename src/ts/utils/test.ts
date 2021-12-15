@@ -65,8 +65,14 @@ const toPrecision = (ms: number, precision = 4) => {
     const success = results.reduce((sum, [_, part1, part2]) => sum + +part1 + +part2, 0);
     const failure = results.reduce((sum, [_, part1, part2]) => sum + +!part1 + +!part2, 0);
 
-    const totalElapsed = results.reduce((sum, v) => sum + v[3], 0);
+    const elapsed = results.map(v => v[3]);
+    const totalElapsed = elapsed.reduce((sum, v) => sum + v, 0);
     const averageElapsed = totalElapsed / actual.length;
+    const lengthIsEven = Math.floor(actual.length / 2) === actual.length / 2;
+    const meanElapsed = lengthIsEven
+        ? (elapsed[actual.length / 2] + elapsed[actual.length / 2 - 1]) / 2
+        : elapsed[(actual.length - 1) / 2];
+
     const maxDescriptionLength = descriptions.map(text => text.length).sort((a, b) => b - a)[0];
     const table = createTable(
         [
@@ -75,10 +81,11 @@ const toPrecision = (ms: number, precision = 4) => {
                 `${toDay(day)} - ${descriptions[idx]}`.padEnd(maxDescriptionLength + 5, ' '),
                 part1 ? CHECK : CROSS,
                 part2 ? CHECK : CROSS,
-                ms > 2 * averageElapsed ? `${FG_RED}${toPrecision(ms)}${RESET}` : toPrecision(ms),
+                ms > 2 * meanElapsed ? `${FG_RED}${toPrecision(ms)}${RESET}` : toPrecision(ms),
             ]),
             ['', '', 'Sum', toPrecision(totalElapsed)],
             ['', '', 'Avg', toPrecision(averageElapsed)],
+            ['', '', 'Mean', toPrecision(meanElapsed)],
         ],
         {
             columns: [
@@ -90,7 +97,7 @@ const toPrecision = (ms: number, precision = 4) => {
             header: {
                 content: 'Test + Performance Results',
             },
-            drawHorizontalLine: (idx, total) => [0, 1, 2, total - 2, total].includes(idx),
+            drawHorizontalLine: (idx, total) => [0, 1, 2, total - 3, total].includes(idx),
         },
     );
     console.log(table);

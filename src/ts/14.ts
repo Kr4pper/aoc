@@ -15,9 +15,10 @@ export default (rawInput: string) => {
     const _grow = ([start, depth]: [string, number]): Hashtable<number> => {
         const [left, right] = start;
         if (depth === 0) {
-            const res = {[left]: 1};
-            res[right] = (res[right] || 0) + 1; // start="CC" etc
-            return res;
+            return {
+                [left]: 1,
+                [right]: left === right ? 2 : 1,
+            };
         }
 
         const growth = rules[start];
