@@ -45,8 +45,8 @@ export default (rawInput: string) => {
         F: '1111',
     } as Hashtable<string>;
 
-    const hexToPaddedBin = (hexa: string): string => {
-        const res = hexa.split('').reduce((acc, v) => acc + HexToBin[v], '');
+    const hexToPaddedBin = (hex: string): string => {
+        const res = hex.split('').reduce((acc, v) => acc + HexToBin[v], '');
         return res.length % 4 === 0
             ? res
             : res.padStart((Math.floor(res.length / 4) + 1) * 4, '0');
@@ -67,30 +67,26 @@ export default (rawInput: string) => {
         const readBits = (bits: number) => parsePackets(readBits => readBits === bits);
         const readPackets = (packets: number) => parsePackets((_, readPackets) => readPackets === packets);
 
-        const parseOperator = (tokenType: Exclude<TokenType, TokenType.Literal>, version: number): OperatorToken => {
-            const packets = consume(1) === '0'
+        const parseOperator = (tokenType: OperatorToken[0], version: number): OperatorToken => [
+            tokenType,
+            version,
+            consume(1) === '0'
                 ? readBits(binaryStrToInt(consume(15)))
-                : readPackets(binaryStrToInt(consume(11)));
+                : readPackets(binaryStrToInt(consume(11)))
+        ];
 
-            return [tokenType, version, packets];
-        };
-
-        const consume = <T extends string>(length: number): T => {
-            const res = input.substring(ptr, ptr + length);
-            ptr += length;
-            return res as T;
-        };
+        const consume = <T extends string>(width: number): T => input.substring(ptr, (ptr = ptr + width)) as T;
 
         let ptr = 0;
         const parsePackets = (done?: (bitsRead: number, packetsRead: number) => boolean): Token[] => {
             let startPtr = ptr;
             const packets: Token[] = [];
             while (!done?.(ptr - startPtr, packets.length) && ptr < input.length - 10) {
-                const versionInt = binaryStrToInt(consume<string>(3));
+                const version = binaryStrToInt(consume<string>(3));
                 const tokenType = TokenTypeById[consume<keyof typeof TokenTypeById>(3)];
 
-                if (tokenType === TokenType.Literal) packets.push(parseLiteral(versionInt));
-                else packets.push(parseOperator(tokenType, versionInt));
+                if (tokenType === TokenType.Literal) packets.push(parseLiteral(version));
+                else packets.push(parseOperator(tokenType, version));
             }
             return packets;
         };
@@ -106,15 +102,15 @@ export default (rawInput: string) => {
     };
     const versionSum = (tokens: Token[]) => tokens.reduce((acc, t) => acc + _versionSum(t), 0);
 
-    const resolve = (token: Token): number =>
+    const parse = (token: Token): number =>
         token[0] === TokenType.Literal
             ? token[2]
-            : Operations[token[0]](token[2].map(resolve));
+            : Operations[token[0]](token[2].map(parse));
 
     const tokens = tokenize(hexToPaddedBin(rawInput));
 
     return [
         versionSum(tokens),
-        resolve(tokens[0]),
+        parse(tokens[0]),
     ];
 };
