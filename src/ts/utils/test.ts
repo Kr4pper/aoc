@@ -94,10 +94,7 @@ const toPrecision = (ms: number, precision = 4) => {
                 {width: 7, alignment: 'center'},
                 {alignment: 'right'},
             ],
-            header: {
-                content: 'Test + Performance Results',
-            },
-            drawHorizontalLine: (idx, total) => [0, 1, 2, total - 3, total].includes(idx),
+            drawHorizontalLine: (idx, total) => [0, 1, total - 3, total].includes(idx),
         },
     );
     console.log(table);
