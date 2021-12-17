@@ -49,8 +49,10 @@ export default (input: string) => {
 
     let max = 0;
     let hits = 0;
+    const dyMax = -target[2] + 1;
+    const dyMin = target[2];
     for (const dx of feasibleDx(target)) {
-        for (let dy = 150; dy > -150; dy--) {
+        for (let dy = dyMin; dy <= dyMax; dy++) {
             if (hitsTarget(target, dx, dy)) {
                 max = Math.max(max, dy);
                 hits++;
