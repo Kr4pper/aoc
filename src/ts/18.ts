@@ -1,10 +1,10 @@
 export default (rawInput: string) => {
     type Arrayfish = [left: Arrayfish, right: Arrayfish] | number;
-    type Snailfish = { left: Snailfish, right: Snailfish; } | number;
+    type Snailfish<T = unknown> = {left: Snailfish<T>, right: Snailfish<T>;} & T | number;
 
     const toArray = (arrayFish: Arrayfish): Snailfish => {
         if (typeof arrayFish === 'number') return arrayFish;
-        return { left: toArray(arrayFish[0]), right: toArray(arrayFish[1]) };
+        return {left: toArray(arrayFish[0]), right: toArray(arrayFish[1])};
     };
 
     type Node = [number, number];
@@ -51,17 +51,38 @@ export default (rawInput: string) => {
         ...b.map(([v, d]) => [v, d + 1] as Node),
     ];
 
-    let res: Node[];
-    for (const line of rawInput.split('\n')) {
-        const nodes = parse(toArray(eval(line)), 0);
+    const snailfishNumbers = rawInput.split('\n').map(line => parse(toArray(eval(line)), 0));
 
-        res = reduce(
-            res
-                ? add(res, nodes)
-                : nodes,
-        );
-    }
-    console.log('>> res', res);
+    type LinkedSnailfish = {left: LinkedSnailfish, right: LinkedSnailfish, parent: Exclude<LinkedSnailfish, number>;};
+    const newNode = (parent: Exclude<LinkedSnailfish, number>): LinkedSnailfish => ({left: null, right: null, parent});
+    const reassemble = (nodes: Node[]): Snailfish => {
+        const res: LinkedSnailfish = newNode(null);
+        let ptr = res;
+        let currentDepth = 0;
+        for (const [value, depth] of nodes) {
+            while (currentDepth > 0) {
+                if (ptr.right == null) break;
+                currentDepth--;
+                ptr = ptr.parent;
+            }
+            if (currentDepth + 1 < depth && ptr.left != null && ptr.right == null) {
+                ptr.right = newNode(ptr);
+                ptr = ptr.right;
+                currentDepth++;
+            }
+
+            while (currentDepth + 1 < depth) { // travel down ptr.left until depth = targetDepth
+                currentDepth++;
+                ptr.left = newNode(ptr);
+                ptr = ptr.left;
+            }
+
+            if (ptr.left == null) ptr.left = value as any;
+            else ptr.right = value as any;
+        }
+
+        return res;
+    };
 
     const magnitude = (fish: Snailfish): number => {
         if (typeof fish === 'number') return fish;
@@ -69,12 +90,20 @@ export default (rawInput: string) => {
         return 3 * magnitude(fish.left) + 2 * magnitude(fish.right);
     };
 
-    console.log('>> mag', toArray(res as any), magnitude(toArray(res as any)));
-
-
-    // PART 2
-
     return [
-        1,
+        magnitude(reassemble(snailfishNumbers.reduce((acc, n) => acc ? reduce(add(acc, n)) : n))),
+        Math.max(...Array.from(
+            {length: snailfishNumbers.length},
+            (_, i) => Array.from(
+                {length: snailfishNumbers.length},
+                (_, j) =>
+                    i === j
+                        ? []
+                        : [
+                            magnitude(reassemble(reduce(add(snailfishNumbers[i], snailfishNumbers[j])))),
+                            magnitude(reassemble(reduce(add(snailfishNumbers[j], snailfishNumbers[i])))),
+                        ]
+            ),
+        ).flat(2)),
     ];
 };
