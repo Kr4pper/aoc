@@ -3,61 +3,71 @@ export default (rawInput: string) => {
     if (_enhancementAlgo.length !== 512) throw new Error();
     const LIGHT = '#';
     const DARK = '.';
-    const enhancementAlgo = _enhancementAlgo.split('').map(v => v === LIGHT);
-    const inputImage = rawInputImage.reduce<boolean[][]>((acc, line) => [...acc, line.split('').map(v => v === LIGHT)], []);
+    const enhancementAlgo = _enhancementAlgo.split('').map(v => v === LIGHT ? 1 : 0);
+    const input = rawInputImage.reduce<number[][]>((acc, line) => [...acc, line.split('').map(v => v === LIGHT ? 1 : 0)], []);
 
-    const VECTORS = [
-        [-1, -1],
-        [-1, +0],
-        [-1, +1],
-        [+0, -1],
-        [+0, +0],
-        [+0, +1],
-        [+1, -1],
-        [+1, +0],
-        [+1, +1],
+    const enhancePixel = (image: number[][], y: number, x: number) => enhancementAlgo[
+        image[y - 1][x - 1] << 8
+        | image[y - 1][x] << 7
+        | image[y - 1][x + 1] << 6
+        | image[y][x - 1] << 5
+        | image[y][x] << 4
+        | image[y][x + 1] << 3
+        | image[y + 1][x - 1] << 2
+        | image[y + 1][x] << 1
+        | image[y + 1][x + 1]
     ];
-    const binaryArrToInt = (bin: boolean[]) => bin.reverse().reduce((acc, v, idx) => acc + (v ? Math.pow(2, idx) : 0), 0);
-    const convertPixel = (image: boolean[][], y: number, x: number) =>
-        enhancementAlgo[binaryArrToInt(VECTORS.map(([dy, dx]) => image[y + dy]?.[x + dx]))];
 
-    const enhance = (image: boolean[][], steps: number): boolean[][] => {
-        if (steps === 0) return image;
-
-        const dim = image.length;
-        const res = new Array<boolean[]>(dim);
+    const pad = (grid: number[][]) => {
+        const dim = input.length;
+        const padding = enhancementAlgo[input[0][0] ? 0 : 2 << 9 - 1];
         for (let y = 0; y < dim; y++) {
-            const line = new Array<boolean>(dim);
-            for (let x = 0; x < dim; x++) line[x] = convertPixel(image, y, x);
-            res[y] = line;
+            grid[y][0] = padding;
+            grid[y][dim - 1] = padding;
         }
-
-        return enhance(res, steps - 1);
+        for (let x = 0; x < dim; x++) {
+            grid[0][x] = padding;
+            grid[dim - 1][x] = padding;
+        }
     };
 
-    const solve = (input: boolean[][], steps: number) => {
-        const PADDING = 2 * steps;
-        const DIM = input.length + 2 * PADDING;
+    const enhance = (input: number[][], output: number[][]) => {
+        pad(output);
 
-        const paddedImage = new Array<boolean[]>(DIM);
-        for (let y = PADDING; y < DIM - PADDING; y++) {
-            const line = new Array<boolean>(DIM);
-            for (let x = PADDING; x < DIM - PADDING; x++) line[x] = input[y - PADDING]?.[x - PADDING];
-            paddedImage[y] = line;
+        const dim = input.length;
+        for (let y = 1; y < dim - 1; y++) {
+            for (let x = 1; x < dim - 1; x++) {
+                output[y][x] = enhancePixel(input, y, x);
+            }
         }
-
-        const enhanced = enhance(paddedImage, steps);
-        return enhanced
-            .filter((_, i) => i >= PADDING / 2 && i <= enhanced.length - PADDING / 2)
-            .reduce((acc, line) => acc + line.filter((v, i) => v && i >= PADDING / 2 && i <= enhanced.length - PADDING / 2).length, 0);
     };
 
-    const debug = (grid: boolean[][]) => {
-        console.log(grid.map(line => line.map(e => e ? LIGHT : DARK).join('')).join('\n'));
+    const score = (grid: number[][], padding: number): number =>
+        grid.filter((_, i) => i >= padding / 2 && i <= grid.length - padding / 2)
+            .reduce((acc, line) => acc + line.filter((v, i) => v && i >= padding / 2 && i <= grid.length - padding / 2).filter(v => v).length, 0);
+
+    const solve = (unpadded: number[][], steps: number) => {
+        const PADDING = 2 * steps + 2;
+        const DIM = unpadded.length + 2 * PADDING;
+
+        let input = Array.from({length: DIM}, () => new Array(DIM).fill(0));
+        for (let y = 1; y < DIM - 1; y++) {
+            for (let x = 1; x < DIM - 1; x++) {
+                input[y][x] = unpadded[y - PADDING]?.[x - PADDING] || 0;
+            }
+        }
+        let output = Array.from({length: DIM}, () => new Array(DIM).fill(0));
+
+        for (let i = 0; i < steps; i++) {
+            if (i % 2 === 0) enhance(input, output);
+            else enhance(output, input);
+        }
+
+        return score(steps % 2 === 0 ? input : output, PADDING);
     };
 
     return [
-        solve(inputImage, 2),
-        solve(inputImage, 50),
+        solve(input, 2),
+        solve(input, 50),
     ];
 };
