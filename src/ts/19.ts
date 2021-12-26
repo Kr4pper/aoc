@@ -17,8 +17,6 @@ export default (rawInput: string) => {
         scanners.push(points);
     }
 
-    console.log(scanners);
-
     type Rotation = (p: Point) => Point;
     const rotations: Rotation[] = [
         ([x, y, z]) => [x, y, z],
@@ -51,13 +49,13 @@ export default (rawInput: string) => {
         let oriented = [] as Scanner[];
         oriented.push(scanners.shift());
 
+        return 1;
+
         while (scanners.length) {
             scanners.forEach((scanner, idx) => {
                 for (const solved of oriented) {
                     for (let i = 0; i < 24; i++) {
                         const rotated = scanner.map(rotations[i]);
-                        console.log(rotated);
-
 
                         if (false) {
                             oriented.push(scanners.splice(idx, 1)[0]);
