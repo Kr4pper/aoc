@@ -1,4 +1,4 @@
-import {binaryStrToInt, Hashtable} from './utils';
+import {binaryStrToInt, Hashtable} from '../utils';
 
 export default (rawInput: string) => {
     enum TokenType {Literal, Sum, Product, Minimum, Maximum, GreaterThan, LessThan, EqualTo}

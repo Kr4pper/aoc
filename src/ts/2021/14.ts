@@ -1,4 +1,4 @@
-import {Hashtable, memoizeBy} from './utils';
+import {Hashtable, memoizeBy} from '../utils';
 
 export default (rawInput: string) => {
     const [start, _rules] = rawInput.split('\n\n');

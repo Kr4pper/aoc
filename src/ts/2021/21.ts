@@ -1,5 +1,3 @@
-import {memoizeBy} from './utils';
-
 export default (rawInput: string) => {
     const [_, start1, __, start2] = rawInput.split('\n').map(line => line.match(/(\d*)$/)).flat().map(Number);
 

@@ -1,4 +1,4 @@
-import {complement, intersection, setsEqual} from './utils';
+import {complement, intersection, setsEqual} from '../utils';
 
 export default (rawInput: string) => {
     const entries = rawInput

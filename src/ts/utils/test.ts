@@ -8,37 +8,43 @@ const RESET = '\x1b[0m';
 const FG_RED = '\x1b[31m';
 const FG_GREEN = '\x1b[32m';
 
-const CHECK = `${FG_GREEN}✓${RESET}`;
-const CROSS = `${FG_RED}X${RESET}`;
+const green = (text: string) => `${FG_GREEN}${text}${RESET}`;
+const red = (text: string) => `${FG_RED}${text}${RESET}`;
+
+const CHECK = green('✓');
+const CROSS = red('X');
 
 const fail = (day: number, part: 1 | 2, expected: number, actual: number) =>
-    console.error(`${FG_RED}Day ${day} (Part ${part}): Expected ${expected} but got ${actual}${RESET}`);
+    console.error(red(`Day ${day} (Part ${part}): Expected ${expected} but got ${actual}`));
 
 const toPrecision = (ms: number, precision = 4) => {
     const [fullMs, splitMs] = `${ms}`.split('.');
     return `${fullMs}.${(splitMs + '0000').slice(0, precision)}`;
 };
 
+const loadFixture = (year: number) => readFileSync(
+    join(__dirname, '..', '..', 'test', `${year}.txt`),
+    {encoding: 'utf-8'},
+)
+    .split('\n')
+    .map(line => line.split(' '));
+
 (() => {
-    const runs = process.argv[2] ? parseInt(process.argv[2]) : 1;
-    if (typeof runs !== 'number' || Number.isNaN(runs) || runs < 1) throw new Error(`Invalid argument for #runs: "${process.argv[2]}"`);
+    const year = +process.argv[2];
+    const runs = process.argv[3] ? parseInt(process.argv[3]) : 1;
+    if (typeof runs !== 'number' || Number.isNaN(runs) || runs < 1) throw new Error(`Invalid argument for #runs: "${process.argv[2]}", should be >=1`);
 
-    console.log(`Performing ${runs} test run${runs > 1 ? 's' : ''}`);
+    console.log(`Executing tests for ${year} (${runs} run${runs > 1 ? 's' : ''})\n`);
 
-    const data = readFileSync(
-        join(__dirname, '..', '..', 'data.txt'),
-        {encoding: 'utf-8'},
-    )
-        .split('\n')
-        .map(line => line.split(' '));
-    const expected = data.map(([part1, part2]) => [part1, part2].map(Number));
-    const descriptions = data.map(([_, __, ...description]) => description.join(' '));
+    const fixture = loadFixture(year);
+    const expected = fixture.map(([part1, part2]) => [part1, part2].map(Number));
+    const descriptions = fixture.map(([_, __, ...description]) => description.join(' '));
 
     const actual = Array.from({length: expected.length}, (_, idx) => {
         const results = new Set<string>();
         let totalMs = 0;
         for (let i = 0; i < runs; i++) {
-            const [part1, part2, elapsedMs] = run(idx + 1);
+            const [part1, part2, elapsedMs] = run(year, idx + 1);
             results.add(`${part1},${part2}`);
             totalMs += elapsedMs;
         }
@@ -60,7 +66,6 @@ const toPrecision = (ms: number, precision = 4) => {
 
         return res as [number, boolean, boolean, number];
     });
-    console.log();
 
     const success = results.reduce((sum, [_, part1, part2]) => sum + +part1 + +part2, 0);
     const failure = results.reduce((sum, [_, part1, part2]) => sum + +!part1 + +!part2, 0);
@@ -81,7 +86,7 @@ const toPrecision = (ms: number, precision = 4) => {
                 `${toDay(day)} - ${descriptions[idx]}`.padEnd(maxDescriptionLength + 5, ' '),
                 part1 ? CHECK : CROSS,
                 part2 ? CHECK : CROSS,
-                ms > 2 * meanElapsed ? `${FG_RED}${toPrecision(ms)}${RESET}` : toPrecision(ms),
+                toPrecision(ms),
             ]),
             ['', '', 'Sum', toPrecision(totalElapsed)],
             ['', '', 'Avg', toPrecision(averageElapsed)],
@@ -99,7 +104,6 @@ const toPrecision = (ms: number, precision = 4) => {
     );
     console.log(table);
 
-    if (failure) console.log(`${FG_RED}FAILURE${RESET}: ${failure} out of ${failure + success} tests failed`);
-    else console.log(`${FG_GREEN}SUCCESS${RESET}: ${success} out of ${success} tests succeeded`);
-    console.log();
+    if (failure) console.log(`${red('FAILURE')}: ${failure} tests failed, ${success} tests succeeded\n`);
+    else console.log(`${green('SUCCESS')}: ${success} tests succeeded\n`);
 })();

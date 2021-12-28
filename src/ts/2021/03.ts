@@ -1,4 +1,4 @@
-import {Hashtable, binaryStrToInt} from './utils';
+import {Hashtable, binaryStrToInt} from '../utils';
 
 export default (rawInput: string) => {
     const input = rawInput.split('\n');

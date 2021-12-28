@@ -1,4 +1,4 @@
-import {Hashtable} from './utils';
+import {Hashtable} from '../utils';
 
 export default (rawInput: string) => {
     type Vertices = Hashtable<string[]>;

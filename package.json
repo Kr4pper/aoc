@@ -1,5 +1,5 @@
 {
-  "name": "aoc2021",
+  "name": "aoc",
   "version": "1.0.0",
   "description": "https://adventofcode.com/2021",
   "main": "index.js",

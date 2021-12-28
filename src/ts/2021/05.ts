@@ -1,4 +1,4 @@
-import {Grid2D} from './utils';
+import {Grid2D} from '../utils';
 
 export default (rawInput: string) => {
     type Vent = [number, number, number, number];
