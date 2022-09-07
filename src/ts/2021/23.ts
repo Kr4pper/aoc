@@ -1,5 +1,5 @@
-export default (rawInput: string) => {
-    // TODO
+export default () => {
+    // solved by hand
 
     return [
         15365,

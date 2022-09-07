@@ -23,7 +23,7 @@ const toPrecision = (ms: number, precision = 4) => {
 };
 
 const loadFixture = (year: number) => readFileSync(
-    join(__dirname, '..', '..', 'test', `${year}.txt`),
+    join(__dirname, '..', '..', 'fixtures', `${year}.txt`),
     {encoding: 'utf-8'},
 )
     .split('\n')

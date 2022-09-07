@@ -38,16 +38,6 @@ export default (rawInput: string) => {
     const [dots, folds] = parseInput(rawInput);
     const foldedSet = new Set(folds.reduce(applyFold, dots).map(([x, y]) => `${x},${y}`));
 
-    if (false) {
-        for (let y = 0; y < 7; y++) {
-            let line = '';
-            for (let x = 0; x < 150; x++) {
-                line += foldedSet.has(`${x},${y}`) ? 'X' : ' ';
-            }
-            console.log(line);
-        }
-    }
-
     return [
         applyFold(dots, folds[0]).length,
         foldedSet.size, // real problem requires image recognition, using this instead for tests
