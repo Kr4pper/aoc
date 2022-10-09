@@ -22,21 +22,28 @@ const toPrecision = (ms: number, precision = 4) => {
     return `${fullMs}.${(splitMs + '0000').slice(0, precision)}`;
 };
 
-const loadFixture = (year: number) => readFileSync(
-    join(__dirname, '..', '..', 'fixtures', `${year}.txt`),
-    {encoding: 'utf-8'},
-)
-    .split('\n')
-    .map(line => line.split(' '));
+const tryLoadFixture = (year: number) => {
+    try {
+        return readFileSync(
+            join(__dirname, '..', '..', 'fixtures', `${year}.txt`),
+            {encoding: 'utf-8'},
+        )
+            .split('\n')
+            .map(line => line.split(' '));
+    } catch (e) {
+        throw new Error(`Invalid argument for 'year': "${year}", expected "YYYY"`)
+    }
+};
 
 (() => {
     const year = +process.argv[2];
+    const fixture = tryLoadFixture(year);
+
     const runs = process.argv[3] ? parseInt(process.argv[3]) : 1;
-    if (typeof runs !== 'number' || Number.isNaN(runs) || runs < 1) throw new Error(`Invalid argument for #runs: "${process.argv[2]}", should be >=1`);
+    if (typeof runs !== 'number' || Number.isNaN(runs) || runs < 1) throw new Error(`Invalid argument for 'runs': "${process.argv[2]}", should be >=1`);
 
     console.log(`Executing tests for ${year} (${runs} run${runs > 1 ? 's' : ''})\n`);
 
-    const fixture = loadFixture(year);
     const expected = fixture.map(([part1, part2]) => [part1, part2].map(Number));
     const descriptions = fixture.map(([_, __, ...description]) => description.join(' '));
 
