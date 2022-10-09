@@ -3,3 +3,5 @@ dist
 target
 src/input/*
 TOKEN
+main.exe
+main.pdb

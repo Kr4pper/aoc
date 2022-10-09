@@ -5,12 +5,13 @@ export default (rawInput: string) => {
 
     // PART 1
     const inputLength = input.length;
-    const numBits = input[0].length;
     const bitCounts = input.reduce((acc, binString) => {
         binString.split('').map(Number).forEach((bit, idx) => acc[idx] = (acc[idx] || 0) + bit);
         return acc;
     }, {} as Hashtable<number>);
     const mostCommonBits = Object.entries(bitCounts).filter(([_, v]) => v > inputLength / 2);
+
+    const numBits = input[0].length;
     const gamma = mostCommonBits.reduce((acc, [k]) => acc + Math.pow(2, numBits - +k - 1), 0);
     const epsilon = Math.pow(2, numBits) - gamma - 1;
     const part1 = gamma * epsilon;

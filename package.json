@@ -8,7 +8,8 @@
     "init": "ts-node src/ts/utils/init-day.ts",
     "build": "tsc --build && xcopy .\\src\\input .\\dist\\input /e /i /y /q",
     "profile": "node --prof dist/ts/utils/run.js",
-    "test": "ts-node src/ts/utils/test.ts"
+    "test": "ts-node src/ts/utils/test.ts",
+    "run-rust": "rustc .\\src\\rust\\main.rs && main.exe"
   },
   "devDependencies": {
     "@types/node": "^16.11.10",

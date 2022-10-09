@@ -1,4 +1,4 @@
-const INPUT: &str = include_str!("..\\..\\input\\01");
+const INPUT: &str = include_str!("..\\..\\input\\2021\\01");
 
 pub fn run() {
     let list_of_ints: Vec<i32> = INPUT.lines().map(|f| f.parse::<i32>().unwrap()).collect();
