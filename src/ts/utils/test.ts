@@ -1,6 +1,7 @@
-import {table as createTable} from 'table';
+import {ArgumentParser} from 'argparse';
 import {readFileSync} from 'fs';
 import {join} from 'path';
+import {table as createTable} from 'table';
 import {toDay} from './input';
 import {run} from './run';
 
@@ -31,16 +32,17 @@ const tryLoadFixture = (year: number) => {
             .split('\n')
             .map(line => line.split(' '));
     } catch (e) {
-        throw new Error(`Invalid argument for 'year': "${year}", expected "YYYY"`)
+        throw new Error(`Invalid argument for 'year': "${year}", expected "YYYY"`);
     }
 };
 
-(() => {
-    const year = +process.argv[2];
-    const fixture = tryLoadFixture(year);
+const parser = new ArgumentParser();
+parser.add_argument('-y', '--year', {default: new Date().getFullYear()});
+parser.add_argument('-r', '--runs', {default: 1});
 
-    const runs = process.argv[3] ? parseInt(process.argv[3]) : 1;
-    if (typeof runs !== 'number' || Number.isNaN(runs) || runs < 1) throw new Error(`Invalid argument for 'runs': "${process.argv[2]}", should be >=1`);
+(() => {
+    const {year, runs} = parser.parse_args();
+    const fixture = tryLoadFixture(year);
 
     console.log(`Executing tests for ${year} (${runs} run${runs > 1 ? 's' : ''})\n`);
 
@@ -51,7 +53,7 @@ const tryLoadFixture = (year: number) => {
         const results = new Set<string>();
         let totalMs = 0;
         for (let i = 0; i < runs; i++) {
-            const [part1, part2, elapsedMs] = run(year, idx + 1);
+            const {part1, part2, elapsedMs} = run(year, idx + 1);
             results.add(`${part1},${part2}`);
             totalMs += elapsedMs;
         }
