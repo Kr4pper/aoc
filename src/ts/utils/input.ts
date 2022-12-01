@@ -8,8 +8,8 @@ export const readInput = (year: string, day: string) =>
         {encoding: 'utf-8'}
     );
 
-export const fetchInput = (rawDay: string | number) => new Axios({}).get<string>(
-    `https://adventofcode.com/2021/day/${+rawDay}/input`,
+export const fetchInput = (year: string, rawDay: string | number) => new Axios({}).get<string>(
+    `https://adventofcode.com/${year}/day/${+rawDay}/input`,
     {headers: {Cookie: `session=${readFileSync(join(__dirname, '..', '..', '..', 'TOKEN'))};`}}
 );
 
