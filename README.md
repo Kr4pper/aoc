@@ -1,3 +1,3 @@
 ﻿# aoc
 
-Typescript solutions of the https://adventofcode.com/2021 puzzles
+Typescript solutions of the https://adventofcode.com/ puzzles from 2021 onwards
