@@ -1,7 +1,9 @@
 node_modules
 dist
 target
-src/input/*
+src/input/*/*
+!src/input/*
+!src/input/*/*.sample
 TOKEN
 main.exe
 main.pdb
