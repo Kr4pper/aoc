@@ -7,7 +7,7 @@
     "watch": "nodemon -e ts,sample src/ts/utils/run-cli.ts",
     "init-day": "ts-node src/ts/utils/init-day.ts",
     "build": "tsc --build && xcopy .\\src\\input .\\dist\\input /e /i /y /q",
-    "profile": "node --prof dist/ts/utils/run.js",
+    "profile": "node --prof dist/ts/utils/run-cli.js",
     "test": "ts-node src/ts/utils/test.ts",
     "run-rust": "rustc .\\src\\rust\\main.rs && main.exe"
   },

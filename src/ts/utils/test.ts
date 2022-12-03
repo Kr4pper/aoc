@@ -6,11 +6,11 @@ import {toDay} from './input';
 import {run} from './run';
 
 const RESET = '\x1b[0m';
-const FG_RED = '\x1b[31m';
-const FG_GREEN = '\x1b[32m';
+const TEXT_RED = '\x1b[31m';
+const TEXT_GREEN = '\x1b[32m';
 
-const green = (text: string) => `${FG_GREEN}${text}${RESET}`;
-const red = (text: string) => `${FG_RED}${text}${RESET}`;
+const green = (text: string) => `${TEXT_GREEN}${text}${RESET}`;
+const red = (text: string) => `${TEXT_RED}${text}${RESET}`;
 
 const CHECK = green('✓');
 const CROSS = red('X');
