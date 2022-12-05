@@ -15,7 +15,7 @@ const red = (text: string) => `${TEXT_RED}${text}${RESET}`;
 const CHECK = green('✓');
 const CROSS = red('X');
 
-const fail = (day: number, part: 1 | 2, expected: number, actual: number) =>
+const fail = (day: number, part: 1 | 2, expected: string, actual: string) =>
     console.error(red(`Day ${day} (Part ${part}): Expected ${expected} but got ${actual}`));
 
 const toPrecision = (ms: number, precision = 4) => {
@@ -46,7 +46,7 @@ parser.add_argument('-r', '--runs', {default: 1});
 
     console.log(`Executing tests for ${year} (${runs} run${runs > 1 ? 's' : ''})\n`);
 
-    const expected = fixture.map(([part1, part2]) => [part1, part2].map(Number));
+    const expected = fixture.map(([part1, part2]) => [part1, part2]);
     const descriptions = fixture.map(([_, __, ...description]) => description.join(' '));
 
     const actual = Array.from({length: expected.length}, (_, idx) => {
@@ -61,19 +61,19 @@ parser.add_argument('-r', '--runs', {default: 1});
         if (results.size > 1) throw new Error(`Diverging results for day ${idx + 1}: ${[...results].join(' - ')}`);
 
         return [
-            ...[...results][0].split(',').map(Number),
+            ...[...results][0].split(','),
             totalMs / runs,
-        ];
+        ] as [string, string, number];
     });
 
     const results = actual.map(([actual1, actual2, elapsedMs], idx) => {
         const [expected1, expected2] = expected[idx];
 
-        const res = [idx + 1, actual1 === expected1, actual2 === expected2, elapsedMs];
+        const res = [idx + 1, actual1 === expected1, actual2 === expected2, elapsedMs] as const;
         if (!res[1]) fail(idx + 1, 1, expected1, actual1);
         if (!res[2]) fail(idx + 1, 2, expected2, actual2);
 
-        return res as [number, boolean, boolean, number];
+        return res;
     });
 
     const success = results.reduce((sum, [_, part1, part2]) => sum + +part1 + +part2, 0);

@@ -1,6 +1,7 @@
 export default (rawInput: string): [number?, number?] => {
+    const assignmentRegex = /^(\d+)-(\d+),(\d+)-(\d+)/;
     const parseAssignment = (line: string) => {
-        const matches = line.match(/^(\d+)-(\d+),(\d+)-(\d+)/);
+        const matches = line.match(assignmentRegex);
         return [matches[1], matches[2], matches[3], matches[4]].map(a => parseInt(a));
     };
 

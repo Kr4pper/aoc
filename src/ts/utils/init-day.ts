@@ -2,7 +2,7 @@ import {mkdirSync, existsSync, writeFileSync} from 'fs';
 import {join} from 'path';
 import {fetchInput, toDay} from './input';
 
-const template = `export default (rawInput: string): [number?, number?] => {
+const template = `export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const input = rawInput.split('\\n');
 
     // PART 1
