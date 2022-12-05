@@ -1,3 +1,4 @@
+import {ArgumentParser} from 'argparse';
 import {mkdirSync, existsSync, writeFileSync} from 'fs';
 import {join} from 'path';
 import {fetchInput, toDay} from './input';
@@ -13,11 +14,13 @@ const template = `export default (rawInput: string): [(number | string)?, (numbe
 };
 `;
 
+const parser = new ArgumentParser();
+parser.add_argument('-y', '--year', {default: new Date().getFullYear()});
+parser.add_argument('-d', '--day', {required: true});
+
 (async () => {
-    const year = new Date().getFullYear().toString();
-    const rawDay = process.argv[2];
-    if (!rawDay) throw new Error('Missing argument for day');
-    const day = toDay(rawDay);
+    const {year, day: _day} = parser.parse_args();
+    const day = toDay(_day);
 
     const inputDir = join(__dirname, '..', '..', 'input', year);
     if (!existsSync(inputDir)) {

@@ -1,4 +1,6 @@
 export * from './binary';
+export * from './combinations';
+export * from './counter';
 export * from './gcd';
 export * from './get-deltas';
 export * from './grid';
