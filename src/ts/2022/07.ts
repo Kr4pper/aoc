@@ -63,13 +63,13 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
         ],
     ];
 
-    const parseInstruction = (line: string) =>
-        parsers.find(([regExp, parse]) => {
+    const executeInstruction = (line: string) =>
+        parsers.find(([regExp, execute]) => {
             const match = line.match(regExp);
-            if (match) parse(match);
+            if (match) execute(match);
         });
 
-    rawInput.split('\n').map(parseInstruction);
+    rawInput.split('\n').map(executeInstruction);
 
     // PART 1
     const dirSizes: Hashtable<number> = {};
