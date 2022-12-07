@@ -10,4 +10,5 @@ export * from './manhattan';
 export * from './memoize';
 export * from './range';
 export * from './set';
+export * from './sort';
 export * from './timing';
