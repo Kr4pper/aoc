@@ -13,7 +13,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
             .sort(sortByKeys(['year', 'month', 'day', 'hour', 'minute']));
 
     const sleepTimes: Hashtable<number> = {};
-    const grid = new Grid2D(Math.max(...[...rawInput.match(/#(\d)+/g)].map(v => +v.substring(1))) + 1, 60, 0);
+    const grid = new Grid2D(Math.max(...[...rawInput.match(/#\d+/g)].map(v => +v.substring(1))) + 1, 60, 0);
     let currentGuard: string;
     let asleepSince: number;
     for (const event of ordered) {
