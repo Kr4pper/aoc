@@ -1,4 +1,4 @@
-import {range} from '../utils';
+import {Hashtable, range} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const input = rawInput.split('\n').map(l => l.split('').map(Number));
@@ -6,6 +6,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const X_DIM = input[0].length - 1;
     const Y_DIM = input.length - 1;
 
+    // PART 1
     const visible = new Set<string>();
     const processHorizontal = (yRange: number[], xRange: number[]) => {
         for (const y of yRange) {
@@ -36,21 +37,38 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     processVertical(range(0, X_DIM), range(0, Y_DIM).reverse()); // bottom -> top
 
     // PART 2
-    let maxScore = 0;
-    for (const x of range(1, X_DIM - 1)) {
-        for (const y of range(1, Y_DIM - 1)) {
-            const ownHeight = input[y][x];
-            const visibleToLeft = (input[y].slice(0, x).reverse().findIndex(v => v >= ownHeight) + 1) || x;
-            const visibleToRight = (input[y].slice(x + 1, X_DIM + 1).findIndex(v => v >= ownHeight) + 1) || (X_DIM - x);
-            const visibleToTop = (range(0, y - 1).reverse().findIndex(v => input[v][x] >= ownHeight) + 1) || y;
-            const visibleToBottom = (range(y + 1, Y_DIM).findIndex(v => input[v][x] >= ownHeight) + 1) || (Y_DIM - y);
-            const score = visibleToLeft * visibleToRight * visibleToTop * visibleToBottom;
-            maxScore = Math.max(maxScore, score);
+    const visibilityList = (items: number[], reverse: boolean) => {
+        const values = reverse ? [...items].reverse() : items;
+        const offset = values.length - 1;
+        const visibility: Hashtable<number> = {};
+        const seen: number[] = [];
+        for (let i = 0; i < values.length; i++) {
+            const current = values[i];
+            const obstacleIdx = seen.findIndex(v => v >= current);
+            if (obstacleIdx !== -1) {
+                visibility[reverse ? offset - i : i] = obstacleIdx + 1; // distance to obstacle
+            } else {
+                visibility[reverse ? offset - i : i] = seen.length; // distance to edge
+            }
+            seen.unshift(current);
         }
+        return visibility;
+    };
+
+    const [toLeft, toRight, toTop, toBottom]: Hashtable<Hashtable<number>>[] = [{}, {}, {}, {}];
+
+    for (const y of range(0, Y_DIM)) {
+        toLeft[y] = visibilityList(input[y], false);
+        toRight[y] = visibilityList(input[y], true);
+    }
+
+    for (const x of range(0, X_DIM)) {
+        toTop[x] = visibilityList(range(0, Y_DIM).map(y => input[y][x]), false);
+        toBottom[x] = visibilityList(range(0, Y_DIM).map(y => input[y][x]), true);
     }
 
     return [
         visible.size,
-        maxScore,
+        Math.max(...range(0, X_DIM).flatMap(x => range(0, Y_DIM).map(y => toLeft[y][x] * toRight[y][x] * toTop[x][y] * toBottom[x][y]))),
     ];
 };
