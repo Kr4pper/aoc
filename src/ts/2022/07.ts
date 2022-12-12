@@ -1,4 +1,4 @@
-import {Hashtable} from '../utils';
+import {add, ascending, Hashtable} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
     interface File {
@@ -89,7 +89,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const TO_DELETE = MIN_UNUSED - (CAPACITY - usedSpace);
 
     return [
-        Object.values(dirSizes).filter(v => v <= 100_000).reduce((sum, v) => sum + v, 0),
-        Object.values(dirSizes).sort((a, b) => a > b ? 1 : -1).find(v => v >= TO_DELETE),
+        Object.values(dirSizes).filter(v => v <= 100_000).reduce(add, 0),
+        Object.values(dirSizes).sort(ascending).find(v => v >= TO_DELETE),
     ];
 };

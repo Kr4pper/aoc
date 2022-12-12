@@ -1,10 +1,12 @@
+import {descending} from '../utils';
+
 export default (rawInput: string): [number?, number?] => {
     const chunks = rawInput.split('\n\n');
 
     const elves =
         chunks
             .map(c => c.split('\n').reduce((acc, calories) => acc + +calories, 0))
-            .sort((a, b) => b > a ? 1 : -1);
+            .sort(descending);
 
     return [
         elves[0],

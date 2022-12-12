@@ -1,52 +1,49 @@
-import {Hashtable, lcm} from '../utils';
+import {descending, Hashtable, lcm, lens, multiply} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
+    const monkeyRegex = /^Monkey (\d+):\n[^\n]*items: ([^\n]*)*\n[^=]*= ([^\n]*)\n[^\n]* by (\d+)\n[^\n]*(\d+)\n[^\n]*(\d+)/m;
     const parseMonkey = (monkey: string) => {
-        const match = /^Monkey (\d+):\n[^\n]*items: ([^\n]*)*\n[^=]*= ([^\n]*)\n[^\n]* by (\d+)\n[^\n]*(\d+)\n[^\n]*(\d+)/m.exec(monkey);
-        const [_, id, startingItems, operation, test, truthy, falsy] = match;
+        const [_, id, startingItems, operation, test, truthy, falsy] = monkeyRegex.exec(monkey);
 
-        const bigIntified = operation.replaceAll(/(\d+)/g, '$1n');
-
+        const op = `old => ${operation}`;
         return {
             id: +id,
-            items: startingItems.split(', ').map(v => [v, BigInt(v)] as const),
-            operation: (): (old: bigint) => bigint => eval(`old => ${bigIntified}`),
-            test: BigInt(test),
+            items: startingItems.split(', ').map(Number),
+            operation: (): (old: number) => number => eval(op),
+            test: +test,
             truthy: +truthy,
             falsy: +falsy
         } as const;
     };
 
-    // PART 1
-    const simulate = (rounds: number, worryMultiplier: bigint) => {
+    const simulateMonkeys = (rounds: number, worryMultiplier: number) => {
         const parsed = rawInput.split('\n\n').map(parseMonkey);
-        const modulus = BigInt(parsed.map(p => Number(p.test)).reduce(lcm, 1));
+        const modulus = parsed.map(lens('test')).map(Number).reduce(lcm, 1);
 
         const monkeys: Hashtable<ReturnType<typeof parseMonkey>> = {};
+        const throws: Hashtable<number> = {};
         for (const monkey of parsed) {
             monkeys[monkey.id] = monkey;
+            throws[monkey.id] = 0;
         }
-        const throws: Hashtable<number> = Object.values(monkeys).reduce((acc, m) => ({...acc, [m.id]: 0}), {});
 
         for (let round = 0; round < rounds; round++) {
             for (const monkey of parsed) {
                 throws[monkey.id] += monkey.items.length;
-                for (const [itemId, item] of monkey.items.splice(0)) {
-                    const newItem = monkey.operation()(item);
-                    const newWorry = newItem / worryMultiplier;
-                    const scaled = newWorry % modulus;
-                    const target = scaled % monkey.test === 0n ? monkey.truthy : monkey.falsy;
-                    monkeys[target].items.push([itemId, scaled]);
+                for (const item of monkey.items.splice(0)) {
+                    const worry = Math.floor(monkey.operation()(item) / worryMultiplier);
+                    const scaled = worry % modulus;
+                    const tossTarget = scaled % monkey.test === 0 ? monkey.truthy : monkey.falsy;
+                    monkeys[tossTarget].items.push(scaled);
                 }
             }
         }
 
-        const sortedThrows = Object.values(throws).sort((a, b) => a < b ? 1 : -1);
-        return sortedThrows[0] * sortedThrows[1];
+        return Object.values(throws).sort(descending).slice(0, 2).reduce(multiply, 1);
     };
 
     return [
-        simulate(20, 3n),
-        simulate(10000, 1n),
+        simulateMonkeys(20, 3),
+        simulateMonkeys(10000, 1),
     ];
 };

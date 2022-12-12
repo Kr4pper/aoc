@@ -1,4 +1,4 @@
-import {Hashtable} from '../utils';
+import {add, Hashtable} from '../utils';
 
 export default (rawInput: string): [number?, number?] => {
     const input = rawInput.split('\n');
@@ -11,7 +11,7 @@ export default (rawInput: string): [number?, number?] => {
         C: {X: 7, Y: 2, Z: 6},
     };
 
-    const getGameScore = (table: ScoreTable) => input.reduce((acc, turn) => acc + table[turn[0]][turn[2]], 0);
+    const getGameScore = (table: ScoreTable) => input.map(turn => table[turn[0]][turn[2]]).reduce(add, 0);
 
     // PART 2
     const scoreTable2: ScoreTable = {

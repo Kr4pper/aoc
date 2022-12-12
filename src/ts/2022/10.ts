@@ -1,4 +1,4 @@
-import {range} from '../utils';
+import {add, range} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
     // PART 1
@@ -34,7 +34,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     crt.push(row);
 
     return [
-        range(0, Math.floor(valueAt.size / 40) - 1).map(v => 20 + 40 * v).reduce((acc, i) => acc + i * valueAt.get(i), 0),
+        range(0, Math.floor(valueAt.size / 40) - 1).map(v => 20 + 40 * v).map(v => v * valueAt.get(v)).reduce(add, 0),
         [...valueAt.values()].reduce((acc, v, idx) => acc + v * idx, 0), // visual output is ZFBFHGUP, using this for testing
     ];
 };
