@@ -36,6 +36,7 @@ parser.add_argument('-d', '--day', {required: true});
         console.log('Writing Input file');
         writeFileSync(inputFile, data.trimEnd());
     }
+    else console.log('Input data already exists');
 
     const solutionDir = join(__dirname, '..', year);
     if (!existsSync(solutionDir)) {
@@ -48,4 +49,5 @@ parser.add_argument('-d', '--day', {required: true});
         console.log('Writing solution file');
         writeFileSync(solutionFile, template);
     }
+    else console.log('Solution file already exists');
 })();

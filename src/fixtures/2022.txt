@@ -8,3 +8,4 @@ JCMHLVGMG LVMRWSSPZ Supply Stacks
 1708 504000 Treetop Tree House
 5960 2327 Rope Bridge
 15680 571747 Cathode-Ray Tube
+78678 15333249714 Monkey in the Middle
