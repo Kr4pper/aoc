@@ -9,6 +9,8 @@ export class Grid2D<T extends number = number> {
         width: number,
         fillValue = 0,
     ) {
+        if (width > height) throw new Error('Unsupported configuration, width must not be greater than height');
+
         this.#height = height;
         this.#width = width;
         this.#size = height * width;
@@ -42,6 +44,15 @@ export class Grid2D<T extends number = number> {
 
     count(predicate: (value: T) => boolean): number {
         return this.filter(predicate).length;
+    }
+
+    adjacent(x: number, y: number): [number, number][] {
+        const res = [] as [number, number][];
+        if (x > 0) res.push([x - 1, y]);
+        if (x < this.#width - 1) res.push([x + 1, y]);
+        if (y > 0) res.push([x, y - 1]);
+        if (y < this.#height - 1) res.push([x, y + 1]);
+        return res;
     }
 }
 
