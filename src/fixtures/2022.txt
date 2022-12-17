@@ -10,5 +10,7 @@ JCMHLVGMG LVMRWSSPZ Supply Stacks
 15680 571747 Cathode-Ray Tube
 78678 15333249714 Monkey in the Middle
 462 451 Hill Climbing Algorithm
+6235 22866 Distress Signal
 737 28144 Regolith Reservoir
 5878678 11796491041245 Beacon Exclusion Zone
+1460 2117 Proboscidea Volcanium
