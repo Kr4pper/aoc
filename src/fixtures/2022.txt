@@ -14,3 +14,4 @@ JCMHLVGMG LVMRWSSPZ Supply Stacks
 737 28144 Regolith Reservoir
 5878678 11796491041245 Beacon Exclusion Zone
 1460 2117 Proboscidea Volcanium
+3098 1525364431487 Pyroclastic Flow
