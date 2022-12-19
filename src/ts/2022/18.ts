@@ -1,38 +1,5 @@
-import {Grid3D} from '../utils';
-
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
-
     // PART 1
-    const lava = new Grid3D(100, 100, 100, 0);
-
-    /**
-     * Z=1
-     * 
-     *  X
-     * 
-     * Z=2
-     *  X
-     * XXX
-     *  X
-     * 
-     * Z=3
-     * 
-     *  X
-     * 
-     * Z=4
-     *  
-     *  X
-     * 
-     * Z=5
-     *  X
-     * X X
-     *  X
-     * 
-     * Z=6
-     * 
-     *  X
-     */
-
     const adjacent = (x: number, y: number, z: number) => [
         [x - 1, y, z],
         [x + 1, y, z],
@@ -42,29 +9,48 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
         [x, y, z + 1],
     ];
 
+    const lava = new Set<string>();
+    let MIN = Infinity;
+    let MAX = -Infinity;
     let surfaceArea = 0;
     for (const line of rawInput.split('\n')) {
         const [x, y, z] = line.split(',').map(Number);
-        lava.set(x, y, z, 1);
+
+        lava.add(`${x},${y},${z}`);
         surfaceArea += 6;
+        MIN = Math.min(MIN, x, y, z);
+        MAX = Math.max(MAX, x, y, z);
 
         for (const [xx, yy, zz] of adjacent(x, y, z)) {
-            if (lava.get(xx, yy, zz)) {
+            if (lava.has(`${xx},${yy},${zz}`)) {
                 surfaceArea -= 2;
                 continue;
             }
         }
     }
 
-    // need to properly scan surface for part 2
-    // flood fill of outside
-    // only consider blocks touching "outside"
+    // PART 2
+    const outOfBounds = (...coordinates: number[]) => coordinates.some(v => v < MIN - 1 || v > MAX + 1);
 
+    let exteriorArea = 0;
+    const visited = new Set();
+    const queue = [[0, 0, 0]];
+    while (queue.length) {
+        let [x, y, z] = queue.shift();
+        const key = `${x},${y},${z}`;
+        if (visited.has(key)) continue;
+        if (lava.has(key)) continue;
+        if (outOfBounds(x, y, z)) continue;
+        visited.add(key);
+
+        for (const [xx, yy, zz] of adjacent(x, y, z)) {
+            if (lava.has(`${xx},${yy},${zz}`)) exteriorArea++;
+            queue.push([xx, yy, zz]);
+        }
+    }
 
     return [
         surfaceArea,
-        // 2906 high
-        // 98 wrong
-        // 2696 wrong
+        exteriorArea,
     ];
 };
