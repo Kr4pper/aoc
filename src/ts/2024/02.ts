@@ -28,7 +28,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const isSafe2 = (levels: number[]) => levels.some((_, idx) => isSafe1(withoutLevelAt(levels, idx)));
 
     return [
-        countTrue(reports.map(isSafe1)), // 631
-        countTrue(reports.map(isSafe2)), // 665
+        countTrue(reports.map(isSafe1)),
+        countTrue(reports.map(isSafe2)),
     ];
 };

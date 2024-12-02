@@ -26,7 +26,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const part2 = left.reduce((sum, a) => sum + (+a * +rightCount[a] || 0), 0);
 
     return [
-        part1, // 1197984
-        part2, // 23387399
+        part1,
+        part2,
     ];
 };
