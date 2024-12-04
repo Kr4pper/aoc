@@ -19,16 +19,13 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
             start => [line[start], line[start + 1], line[start + 2], line[start + 3]].join('')
         );
 
-    const lines = [
-        ...grid.horizontals(),
-        ...grid.verticals(),
-        ...grid.diagonals(),
-        ...grid.antiDiagonals()
-    ];
-
-    const slices = lines.reduce((slices, line) => [...slices, ...slidingWindowBy4(line)], []);
     const keywords = new Set(['XMAS', 'SAMX']);
-    const part1 = slices.filter(slice => keywords.has(slice)).length;
+    const part1 = [
+        grid.horizontals(),
+        grid.verticals(),
+        grid.diagonals(),
+        grid.antiDiagonals()
+    ].reduce((xmas, cluster) => xmas + cluster.flatMap(slidingWindowBy4).filter(slice => keywords.has(slice)).length, 0);
 
     // PART 2
     let part2 = 0;
