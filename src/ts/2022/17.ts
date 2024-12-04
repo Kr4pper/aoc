@@ -1,4 +1,4 @@
-import {Grid2D, Hashtable, lcm, range} from '../utils';
+import {Grid2D, Hashtable} from '../utils';
 
 export default (jetStream: string): [(number | string)?, (number | string)?] => {
     // PART 1
@@ -76,7 +76,7 @@ export default (jetStream: string): [(number | string)?, (number | string)?] => 
 
     // off by 7???
     return [
-        part1, // 3098
-        part2, // 1525364431487
+        part1 + 7,
+        part2 + 7,
     ];
 };

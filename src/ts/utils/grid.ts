@@ -1,4 +1,6 @@
-export class Grid2D<T extends number = number> {
+import {range} from './range';
+
+export class Grid2D<T = number> {
     #height: number;
     #width: number;
     #size: number;
@@ -7,7 +9,7 @@ export class Grid2D<T extends number = number> {
     constructor(
         height: number,
         width: number,
-        fillValue = 0,
+        fillValue: any = 0,
     ) {
         if (width > height) throw new Error('Unsupported configuration, width must not be greater than height');
 
@@ -25,12 +27,18 @@ export class Grid2D<T extends number = number> {
         this.#data[x + y * this.#height] = value;
     }
 
+    /**
+     * only available iff T extends number
+     */
     increment(x: number, y: number) {
-        this.#data[x + y * this.#height]++;
+        (this.#data[x + y * this.#height] as number)++;
     }
 
+    /**
+     * only available iff T extends number
+     */
     incrementLine(x1: number, y1: number, x2: number, y2: number) {
-        const slope = (start: number, end: number) => start === end ? 0 : start > end ? -1 : 1;
+        const slope = (start: number, end: number) => start === end ? 0 : (start > end ? -1 : 1);
 
         const dx = slope(x1, x2);
         const dy = slope(y1, y2);
@@ -54,9 +62,51 @@ export class Grid2D<T extends number = number> {
         if (y < this.#height - 1) res.push([x, y + 1]);
         return res;
     }
+
+    horizontals() {
+        return range(0, this.#height - 1).map(y => range(0, this.#width - 1).map(x => this.get(x, y)));
+    }
+
+    verticals() {
+        return range(0, this.#width - 1).map(x => range(0, this.#height - 1).map(y => this.get(x, y)));
+    }
+
+    diagonals() {
+        const numDiags = this.#width + this.#height - 2;
+        const maxDiagLength = Math.min(this.#width, this.#height);
+        return range(0, numDiags).map(diagIdx => {
+            const diagLength = Math.min(
+                maxDiagLength,
+                diagIdx < numDiags / 2
+                    ? diagIdx + 1
+                    : numDiags - diagIdx + 1
+            );
+            const startX = diagIdx < this.#height ? 0 : diagIdx - this.#height + 1;
+            const startY = diagIdx < this.#height ? this.#height - diagIdx - 1 : 0;
+
+            return range(0, diagLength - 1).map(idx => this.get(startX + idx, startY + idx));
+        });
+    }
+
+    antiDiagonals() {
+        const numDiags = this.#width + this.#height - 2;
+        const maxDiagLength = Math.min(this.#width, this.#height);
+        return range(0, numDiags).map(diagIdx => {
+            const diagLength = Math.min(
+                maxDiagLength,
+                diagIdx < numDiags / 2
+                    ? diagIdx + 1
+                    : numDiags - diagIdx + 1
+            );
+            const startX = diagIdx < this.#width ? diagIdx : this.#width - 1;
+            const startY = diagIdx < this.#width ? 0 : diagIdx - this.#height + 1;
+
+            return range(0, diagLength - 1).map(idx => this.get(startX - idx, startY + idx));
+        });
+    }
 }
 
-export class Grid3D<T extends number = number>  {
+export class Grid3D<T extends number = number> {
     #height: number;
     #width: number;
     #depth: number;
