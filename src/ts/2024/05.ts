@@ -2,39 +2,41 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const [rawRules, rawUpdates] = rawInput.split('\n\n');
 
     // PART 1
-    const rules = rawRules.split('\n').map(r => r.split('|').map(Number));
+    const rules = rawRules.split('\n').map(r => r.split('|').map(Number)) as [number, number][];
     const updates = rawUpdates.split('\n').map(r => r.split(',').map(Number));
 
-    const ruleValidation = (update: number[]) => ([before, after]: [number, number]): [valid: boolean, error?: [number, number]] => {
+    const findRuleError = (update: number[], [before, after]: [number, number]) => {
         const beforeIdx = update.indexOf(before);
+        if (beforeIdx < 0) return null;
+
         const afterIdx = update.indexOf(after);
-        if (beforeIdx < 0 || afterIdx < 0 || beforeIdx < afterIdx) return [true];
+        if (afterIdx < 0 || beforeIdx < afterIdx) return null;
 
-        return [false, [beforeIdx, afterIdx]];
+        return [beforeIdx, afterIdx] as [number, number];
     };
 
-    const validate = (update: number[]) => {
-        const errors: [number, number][] = [];
-        for (const [valid, error] of rules.map(ruleValidation(update))) {
-            if (!valid) errors.push(error);
+    const findUpdateError = (update: number[]) => {
+        for (const rule of rules) {
+            const error = findRuleError(update, rule);
+            if (error) return error;
         }
-        return errors;
     };
 
-    const validateAll = (updates: number[][]) => {
+    const validateUpdates = (updates: number[][]) => {
         const validUpdates: number[][] = [];
-        const invalidUpdates: [update: number[], errors: [number, number][]][] = [];
+        const invalidUpdates: [update: number[], error: [number, number]][] = [];
         for (const update of updates) {
-            const errors = validate(update);
-
-            if (errors.length > 0) invalidUpdates.push([update, errors]);
+            const error = findUpdateError(update);
+            if (error) invalidUpdates.push([update, error]);
             else validUpdates.push(update);
         }
 
         return [validUpdates, invalidUpdates] as const;
     };
 
-    const [validPart1, invalidPart1] = validateAll(updates);
+    const [validUpdates, invalidUpdates] = validateUpdates(updates);
+
+    const middleElementSum = (updates: number[][]) => updates.reduce((sum, update) => sum + update[(update.length - 1) / 2], 0);
 
     // PART 2
     const fixError = (update: number[], error: [number, number]) => {
@@ -43,19 +45,17 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
         update[error[0]] = swap;
     };
 
-    let part2 = 0;
-    for (let [update, errors] of invalidPart1) {
+    const fixUpdate = ([update, error]: [number[], [number, number]]) => {
         do {
-            fixError(update, errors[0]);
-            errors = validate(update);
-        } while (errors.length);
+            fixError(update, error);
+            error = findUpdateError(update);
+        } while (error);
 
-        part2 += update[(update.length - 1) / 2];
-    }
-    
+        return update;
+    };
 
     return [
-        validPart1.reduce((sum, update) => sum + update[(update.length - 1) / 2], 0),
-        part2,
+        middleElementSum(validUpdates),
+        middleElementSum(invalidUpdates.map(fixUpdate)),
     ];
 };
