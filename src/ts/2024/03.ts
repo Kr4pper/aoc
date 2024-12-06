@@ -1,4 +1,4 @@
-import {Hashtable, sum} from '../utils';
+import {sum} from '../utils';
 
 export default (input: string): [(number | string)?, (number | string)?] => {
     // PART 1
