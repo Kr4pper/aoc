@@ -4,7 +4,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const input = rawInput.split('\n');
 
     // PART 1
-    const map = Grid2D.fromStringArray(input);
+    const map = Grid2D.parse(input);
     const [startX, startY] = map.findValue('^');
 
     const DIRECTIONS = [
@@ -32,28 +32,28 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     }
 
     // PART 2
-    const mapHasLoop = (map: Grid2D<string>) => {
-        const movements = new Set<string>();
+    const mapHasLoop = (grid: Grid2D<string>) => {
+        const visitedObstacles = new Set<string>();
         let [x, y] = [startX, startY];
         let heading = 0;
         while (true) {
-            const movement = `${x},${y},${heading}`;
-            if (movements.has(movement)) {
-                return true;
-            }
-
-            movements.add(movement);
             const [dx, dy] = DIRECTIONS[heading];
-            const next = map.get(x + dx, y + dy);
+            const next = grid.get(x + dx, y + dy);
             if (next === '.' || next === '^') {
                 x += dx;
                 y += dy;
             }
             else if (next === '#') {
+                const movement = `${x},${y},${heading}`;
+                if (visitedObstacles.has(movement)) {
+                    return true;
+                }
+
+                visitedObstacles.add(movement);
                 heading = (heading + 1) % 4;
             }
             else {
-                return false;
+                return false; // out of bounds
             }
         }
     };

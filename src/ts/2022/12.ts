@@ -5,7 +5,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
 
     const X_DIM = input[0].length;
     const Y_DIM = input.length;
-    const grid = new Grid2D(X_DIM, Y_DIM);
+    const grid = new Grid2D<number>(X_DIM, Y_DIM);
     let startY = 0;
     let startX = 0;
     let endY = 0;

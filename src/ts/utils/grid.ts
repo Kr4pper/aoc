@@ -1,6 +1,6 @@
 import {range} from './range';
 
-export class Grid2D<T = number> {
+export class Grid2D<T> {
     height: number;
     width: number;
     #size: number;
@@ -19,7 +19,7 @@ export class Grid2D<T = number> {
         this.#data = new Array(height * width).fill(fillValue);
     }
 
-    static fromStringArray(input: string[]) {
+    static parse(input: string[]) {
         const yDim = input.length;
         const xDim = input[0].length;
         const grid = new Grid2D<string>(yDim, xDim, '');

@@ -19,14 +19,14 @@ export default (rawInput: string) => {
         return [nonDiagonal, diagonal];
     };
 
-    const applyOverlaps = (vents: Vent[], grid: Grid2D) => {
+    const applyOverlaps = (vents: Vent[], grid: Grid2D<number>) => {
         for (const [x1, y1, x2, y2] of vents) grid.incrementLine(x1, y1, x2, y2);
 
         return grid.count(v => v > 1);
     };
 
     const [nonDiagonal, diagonal] = sortVents(vents);
-    const grid = new Grid2D(1000, 1000, 0);
+    const grid = new Grid2D<number>(1000, 1000, 0);
 
     return [
         applyOverlaps(nonDiagonal, grid),

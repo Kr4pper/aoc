@@ -4,15 +4,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const input = rawInput.split('\n');
 
     // PART 1
-    const yDim = input.length;
-    const xDim = input[0].length;
-    const grid = new Grid2D<string>(yDim, xDim, ''); // top left = (0,0)
-
-    for (let y = 0; y < yDim; y++) {
-        for (let x = 0; x < xDim; x++) {
-            grid.set(x, y, input[y][x]);
-        }
-    }
+    const grid = Grid2D.parse(input);
 
     const slidingWindowBy4 = (line: string[]) =>
         range(0, line.length - 4).map(
@@ -28,6 +20,8 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     ].reduce((xmas, cluster) => xmas + cluster.flatMap(slidingWindowBy4).filter(slice => keywords.has(slice)).length, 0);
 
     // PART 2
+    const xDim = grid.width;
+    const yDim = grid.height;
     let part2 = 0;
     for (let x = 0; x < xDim - 2; x++) {
         for (let y = 0; y < yDim - 2; y++) {

@@ -8,7 +8,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     };
 
     const claims = rawInput.split('\n').map(parseClaim);
-    const grid = new Grid2D(1001, 1001, 0);
+    const grid = new Grid2D<number>(1001, 1001, 0);
 
     // PART 1
     for (const [_, x, y, xDim, yDim] of claims) {

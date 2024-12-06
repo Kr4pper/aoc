@@ -1,4 +1,4 @@
-import { manhattan } from '../utils';
+import {manhattan} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const parseLine = (line: string): [number, number] => {
@@ -23,7 +23,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     minY--;
     maxY++;
 
-    const scores = {} as { [key: number]: number; };
+    const scores = {} as {[key: number]: number;};
     const invalid = new Set<number>();
     for (let x = minX; x <= maxX; x++) {
         for (let y = minY; y <= maxY; y++) {
