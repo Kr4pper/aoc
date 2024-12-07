@@ -1,68 +1,56 @@
-import {range} from '../utils';
-
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
-    // PART 1
-    const parse = (line: string) => {
+    type Line = [
+        value: number,
+        nums: number[],
+    ];
+    const parseLine = (line: string): Line => {
         const [result, numbers] = line.split(': ');
-        return [+result, numbers.split(' ').map(Number)] as const;
+        return [+result, numbers.split(' ').map(Number)];
     };
-    const lines = rawInput.split('\n').map(parse);
+    const lines = rawInput.split('\n').map(parseLine);
 
-    const apply1 = (numbers: number[], n: number) => {
-        const bin = n.toString(2).padStart(numbers.length - 1, '0');
-        let res = numbers[0];
-        for (let idx = 0; idx < numbers.length - 1; idx++) {
-            if (+bin[idx]) {
-                res += numbers[idx + 1];
-            }
-            else {
-                res *= numbers[idx + 1];
-            }
+    const isValid = ([value, numbers]: Line, concatEnabled: boolean) => {
+        if (numbers.length === 2) {
+            return (
+                numbers[0] + numbers[1] === value ||
+                numbers[0] * numbers[1] === value ||
+                (concatEnabled && +numbers.join('') === value)
+            );
         }
-        return res;
-    };
 
-    let part1 = 0;
-    for (const [res, numbers] of lines) {
-        const candidates = range(0, Math.pow(2, numbers.length - 1) - 1);
-        if (candidates.some(n => apply1(numbers, n) === res)) {
-            part1 += res;
+        const tail = numbers.at(-1);
+        const front = numbers.slice(0, -1);
+
+        const sumTarget = value - tail;
+        if (sumTarget > 0 && isValid([sumTarget, front], concatEnabled)) {
+            return true;
         }
-    }
 
-    // PART 2
+        const multiplyTarget = value / tail;
+        if (
+            multiplyTarget === Math.floor(multiplyTarget) &&
+            isValid([multiplyTarget, front], concatEnabled)
+        ) {
+            return true;
+        }
 
-    const apply2 = (numbers: number[], n: number) => {
-        const bin = n.toString(3).padStart(numbers.length - 1, '0');
-        let res = numbers[0];
-        for (let idx = 0; idx < numbers.length - 1; idx++) {
-            switch (+bin[idx]) {
-                case 0:
-                    res += numbers[idx + 1];
-                    break;
-                case 1:
-                    res *= numbers[idx + 1];
-                    break;
-                case 2:
-                    res = +(res.toString() + numbers[idx + 1].toString());
-                    break;
-                default:
-                    throw new Error();
+        if (concatEnabled && String(value).endsWith(String(tail))) {
+            const concatTarget = Number(String(value).slice(0, -String(tail).length));
+            if (isValid([concatTarget, front], concatEnabled)) {
+                return true;
             }
         }
-        return res;
+
+        return false;
     };
 
-    let part2 = 0;
-    for (const [res, numbers] of lines) {
-        const candidates = range(0, Math.pow(3, numbers.length - 1) - 1);
-        if (candidates.some(n => apply2(numbers, n) === res)) {
-            part2 += res;
-        }
-    }
+    const calibrationResult = (lines: Line[], concatEnabled: boolean) =>
+        lines
+            .filter(line => isValid(line, concatEnabled))
+            .reduce((sum, [value]) => sum + value, 0);
 
     return [
-        part1.toString(), // 6392012777720
-        part2.toString(), // 61561126043536
+        calibrationResult(lines, false),
+        calibrationResult(lines, true),
     ];
 };
