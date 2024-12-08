@@ -54,7 +54,7 @@ export class Grid2D<T> {
     /**
      * only available iff T extends number
      */
-    increment<T extends number>(x: number, y: number) {
+    increment(x: number, y: number) {
         (this.#data[x + y * this.height] as number)++;
     }
 
