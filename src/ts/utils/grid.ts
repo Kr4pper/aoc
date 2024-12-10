@@ -1,5 +1,7 @@
 import {range} from './range';
 
+export type Point = [x: number, y: number];
+
 export class Grid2D<T> {
     height: number;
     width: number;
@@ -19,10 +21,10 @@ export class Grid2D<T> {
         this.#data = new Array(height * width).fill(fillValue);
     }
 
-    static parse(input: string[]) {
+    static parse<T>(input: T[][]) {
         const yDim = input.length;
         const xDim = input[0].length;
-        const grid = new Grid2D<string>(yDim, xDim, '');
+        const grid = new Grid2D<T>(yDim, xDim, '');
 
         for (let y = 0; y < yDim; y++) {
             for (let x = 0; x < xDim; x++) {
@@ -78,7 +80,7 @@ export class Grid2D<T> {
         return this.filter(predicate).length;
     }
 
-    find(predicate: (value: T) => boolean): [x: number, y: number] {
+    find(predicate: (value: T) => boolean): Point {
         const idx = this.#data.findIndex(predicate);
         const y = Math.floor(idx / this.height);
         const x = idx - y * this.height;
@@ -87,6 +89,19 @@ export class Grid2D<T> {
 
     findValue(value: T) {
         return this.find(v => v === value);
+    }
+
+
+    findAll(predicate: (value: T) => boolean): Point[] {
+        const res: Point[] = [];
+        for (let idx = 0; idx < this.#size; idx++) {
+            if (predicate(this.#data[idx])) {
+                const y = Math.floor(idx / this.height);
+                const x = idx - y * this.height;
+                res.push([x, y]);
+            }
+        }
+        return res;
     }
 
     adjacent(x: number, y: number): [number, number][] {
