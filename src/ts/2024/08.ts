@@ -1,7 +1,7 @@
 import {Grid2D} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
-    const grid = Grid2D.parse(rawInput.split('\n'));
+    const grid = Grid2D.parse(rawInput.split('\n').map(line => line.split('')));
     if (grid.width !== grid.height) throw new Error('square input grid expected');
     const DIM = grid.width;
 

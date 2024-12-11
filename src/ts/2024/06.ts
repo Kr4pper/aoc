@@ -1,7 +1,7 @@
 import {Grid2D} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
-    const input = rawInput.split('\n');
+    const input = rawInput.split('\n').map(line => line.split(''));
 
     // PART 1
     const map = Grid2D.parse(input);

@@ -1,10 +1,10 @@
 import {Grid2D, range} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
-    const input = rawInput.split('\n');
+    const input = rawInput.split('\n').map(line => line.split(''));
 
     // PART 1
-    const grid = Grid2D.parse(input);
+    const grid = Grid2D.parse<string>(input);
 
     const slidingWindowBy4 = (line: string[]) =>
         range(0, line.length - 4).map(
