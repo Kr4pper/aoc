@@ -11,7 +11,7 @@ export class Grid2D<T> {
     constructor(
         height: number,
         width: number,
-        fillValue: any = 0,
+        fillValue: T = undefined,
     ) {
         if (width > height) throw new Error('Unsupported configuration, width must not be greater than height');
 
@@ -24,7 +24,7 @@ export class Grid2D<T> {
     static parse<T>(input: T[][]) {
         const yDim = input.length;
         const xDim = input[0].length;
-        const grid = new Grid2D<T>(yDim, xDim, '');
+        const grid = new Grid2D<T>(yDim, xDim);
 
         for (let y = 0; y < yDim; y++) {
             for (let x = 0; x < xDim; x++) {
