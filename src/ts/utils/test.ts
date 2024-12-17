@@ -28,7 +28,7 @@ const fail = (day: number, part: 1 | 2, expected: string, actual: string) =>
     console.error(red(`Day ${day} (Part ${part}): Expected ${expected} but got ${actual}`));
 
 const notRun = (day: number, part: 1 | 2, expected: string, actual: string) =>
-    console.warn(red(`Day ${day} (Part ${part}): Not run`));
+    console.log(yellow(`Day ${day} (Part ${part}): Not run`));
 
 const toPrecision = (ms: number, precision = 4) => {
     const [fullMs, splitMs] = `${ms}`.split('.');
@@ -70,17 +70,19 @@ parser.add_argument('-r', '--runs', {default: 1});
         let totalMs = 0;
         for (let i = 0; i < runs; i++) {
             const {part1, part2, elapsedMs} = run(year, idx + 1);
-            results.add(`${part1},${part2}`);
+            results.add(`${part1}~~~${part2}`);
             totalMs += elapsedMs;
         }
 
         if (results.size > 1) throw new Error(`Diverging results for day ${idx + 1}: ${[...results].join(' - ')}`);
 
         return [
-            ...[...results][0].split(','),
+            ...[...results][0].split('~~~'),
             totalMs / runs,
         ] as [string, string, number];
     });
+
+    console.log(actual)
 
     const results = actual.map(([actual1, actual2, elapsedMs], idx) => {
         const [expected1, expected2] = expected[idx];
