@@ -27,7 +27,6 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
         if (bottom && left) bottomLeft++;
         if (bottom && right) bottomRight++;
     }
-    console.log({topLeft, topRight, bottomLeft, bottomRight});
 
     // PART 2
     const render = (seconds: number) => {
@@ -55,10 +54,10 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
         };
         max = Math.max(robots, max);
     }
-        */
+    */
 
     return [
-        topLeft * topRight * bottomLeft * bottomRight, // 233709840
+        topLeft * topRight * bottomLeft * bottomRight,
         6620,
     ];
 };

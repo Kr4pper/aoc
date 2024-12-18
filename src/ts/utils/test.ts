@@ -82,8 +82,6 @@ parser.add_argument('-r', '--runs', {default: 1});
         ] as [string, string, number];
     });
 
-    console.log(actual)
-
     const results = actual.map(([actual1, actual2, elapsedMs], idx) => {
         const [expected1, expected2] = expected[idx];
 
@@ -107,10 +105,11 @@ parser.add_argument('-r', '--runs', {default: 1});
     const elapsed = results.filter(([_, p1, p2]) => p1 !== Result.Skipped || p2 !== Result.Skipped).map(v => v[3]);
     const totalElapsed = elapsed.reduce((sum, v) => sum + v, 0);
     const averageElapsed = totalElapsed / elapsed.length;
-    const lengthIsEven = Math.floor(elapsed.length / 2) === elapsed.length / 2;
+    const lengthIsEven = elapsed.length % 2 === 0;
+    const sorted = [...elapsed].sort((a, b) => a - b);
     const meanElapsed = lengthIsEven
-        ? (elapsed[elapsed.length / 2] + elapsed[elapsed.length / 2 - 1]) / 2
-        : elapsed[(elapsed.length - 1) / 2];
+        ? (sorted[sorted.length / 2] + sorted[sorted.length / 2 - 1]) / 2
+        : sorted[(sorted.length - 1) / 2];
 
     const maxDescriptionLength = descriptions.map(text => text.length).sort((a, b) => b - a)[0];
     const table = createTable(
@@ -125,6 +124,8 @@ parser.add_argument('-r', '--runs', {default: 1});
             ['', '', 'Sum', toPrecision(totalElapsed)],
             ['', '', 'Avg', toPrecision(averageElapsed)],
             ['', '', 'Mean', toPrecision(meanElapsed)],
+            ['', '', 'Min', toPrecision(sorted.at(0))],
+            ['', '', 'Max', toPrecision(sorted.at(-1))],
         ],
         {
             columns: [
@@ -133,7 +134,7 @@ parser.add_argument('-r', '--runs', {default: 1});
                 {width: 7, alignment: 'center'},
                 {alignment: 'right'},
             ],
-            drawHorizontalLine: (idx, total) => [0, 1, total - 3, total].includes(idx),
+            drawHorizontalLine: (idx, total) => [0, 1, total - 5, total].includes(idx),
         },
     );
     console.log(table);
