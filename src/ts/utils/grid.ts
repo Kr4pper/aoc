@@ -18,7 +18,8 @@ export class Grid2D<T> {
         this.height = height;
         this.width = width;
         this.#size = height * width;
-        this.#data = new Array(height * width).fill(fillValue);
+        const max = Math.max(height, width)
+        this.#data = new Array(max * max).fill(fillValue);
     }
 
     static parse<T>(input: T[][]) {
@@ -91,7 +92,6 @@ export class Grid2D<T> {
         return this.find(v => v === value);
     }
 
-
     findAll(predicate: (value: T) => boolean): Point[] {
         const res: Point[] = [];
         for (let idx = 0; idx < this.#size; idx++) {
@@ -104,8 +104,8 @@ export class Grid2D<T> {
         return res;
     }
 
-    adjacent(x: number, y: number): [number, number][] {
-        const res = [] as [number, number][];
+    adjacent(x: number, y: number): Point[] {
+        const res: Point[] = [];
         if (x > 0) res.push([x - 1, y]);
         if (x < this.width - 1) res.push([x + 1, y]);
         if (y > 0) res.push([x, y - 1]);

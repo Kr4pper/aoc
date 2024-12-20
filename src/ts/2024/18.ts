@@ -70,7 +70,7 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
     };
 
     return [
-        part1(), // 250
-        part2(), // 56,8
+        part1(),
+        part2(),
     ];
 };
