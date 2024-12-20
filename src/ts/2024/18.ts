@@ -13,10 +13,6 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
         memory.set(x, y, '#');
     }
 
-    const print = (grid: Grid2D<number | string>, delimiter: string, pad?: number) => console.log(
-        grid.horizontals().map(h => h.map(v => String(v).padStart(pad, ' ')).join(delimiter)).join('\n')
-    );
-
     const part1 = () => {
         const distances = new Grid2D(DIM + 1, DIM + 1, Number.MAX_SAFE_INTEGER);
         const flood = (x: number, y: number, accumulated: number) => {

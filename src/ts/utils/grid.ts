@@ -6,6 +6,7 @@ export class Grid2D<T> {
     height: number;
     width: number;
     #size: number;
+    #offset: number;
     #data: T[];
 
     constructor(
@@ -13,13 +14,11 @@ export class Grid2D<T> {
         width: number,
         fillValue: T = undefined,
     ) {
-        if (width > height) throw new Error('Unsupported configuration, width must not be greater than height');
-
         this.height = height;
         this.width = width;
         this.#size = height * width;
-        const max = Math.max(height, width)
-        this.#data = new Array(max * max).fill(fillValue);
+        this.#offset = Math.max(height, width);
+        this.#data = new Array(this.#offset * this.#offset).fill(fillValue);
     }
 
     static parse<T>(input: T[][]) {
@@ -44,21 +43,21 @@ export class Grid2D<T> {
         if (x < 0 || x > this.width - 1) return;
         if (y < 0 || y > this.height - 1) return;
 
-        return this.#data[x + y * this.height];
+        return this.#data[x + y * this.#offset];
     }
 
     set(x: number, y: number, value: T) {
         if (x < 0 || x > this.width - 1) return;
         if (y < 0 || y > this.height - 1) return;
 
-        this.#data[x + y * this.height] = value;
+        this.#data[x + y * this.#offset] = value;
     }
 
     /**
      * only available iff T extends number
      */
     increment(x: number, y: number) {
-        (this.#data[x + y * this.height] as number)++;
+        (this.#data[x + y * this.#offset] as number)++;
     }
 
     /**
@@ -83,8 +82,8 @@ export class Grid2D<T> {
 
     find(predicate: (value: T) => boolean): Point {
         const idx = this.#data.findIndex(predicate);
-        const y = Math.floor(idx / this.height);
-        const x = idx - y * this.height;
+        const y = Math.floor(idx / this.#offset);
+        const x = idx - y * this.#offset;
         return [x, y];
     }
 
@@ -96,8 +95,8 @@ export class Grid2D<T> {
         const res: Point[] = [];
         for (let idx = 0; idx < this.#size; idx++) {
             if (predicate(this.#data[idx])) {
-                const y = Math.floor(idx / this.height);
-                const x = idx - y * this.height;
+                const y = Math.floor(idx / this.#offset);
+                const x = idx - y * this.#offset;
                 res.push([x, y]);
             }
         }
@@ -166,6 +165,10 @@ export class Grid2D<T> {
             );
         });
     }
+
+    print(delimiter = '', pad = 0) {
+        console.log(this.horizontals().map(h => h.map(v => String(v).padStart(pad, ' ')).join(delimiter)).join('\n'));
+    };
 }
 
 export class Grid3D<T extends number = number> {
