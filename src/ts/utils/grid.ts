@@ -16,9 +16,9 @@ export class Grid2D<T> {
     ) {
         this.height = height;
         this.width = width;
-        this.#size = height * width;
         this.#offset = Math.max(height, width);
-        this.#data = new Array(this.#offset * this.#offset).fill(fillValue);
+        this.#size = this.#offset * this.#offset;
+        this.#data = new Array(this.#size).fill(fillValue);
     }
 
     static parse<T>(input: T[][]) {
