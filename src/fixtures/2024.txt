@@ -18,3 +18,7 @@
 250 56,8 RAM Run
 304 705756472327497 Linen Layout
 1355 1007335 Race Condition
+- - Keypad Conundrum
+- - Monkey Market
+- - LAN Party
+57632654722854 - Crossed Wires
