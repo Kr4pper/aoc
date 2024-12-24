@@ -1,32 +1,27 @@
-import {Hashtable} from '../utils';
+import {counter} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const input = rawInput.split('\n');
 
     // PART 1
-    const left: string[] = [];
-    const right: string[] = [];
+    const left: number[] = [];
+    const right: number[] = [];
 
     input.forEach(line => {
-        const [_, a, b] = line.match(/(\d+)\s+(\d+)/);
-        left.push(a);
-        right.push(b);
+        const [a, b] = line.split('   ');
+        left.push(+a);
+        right.push(+b);
     });
 
     left.sort();
     right.sort();
 
-    const part1 = left.reduce((sum, a, idx) => sum + Math.abs(+a - +right[idx]), 0);
-
     // PART 2
-    const rightCount = right.reduce((res, v) => ({
-        ...res,
-        [v]: (res[v] || 0) + 1,
-    }), {} as Hashtable<number>);
-    const part2 = left.reduce((sum, a) => sum + (+a * +rightCount[a] || 0), 0);
+    const leftCount = counter(left);
+    const rightCount = counter(right);
 
     return [
-        part1,
-        part2,
+        left.reduce((sum, a, idx) => sum + Math.abs(a - right[idx]), 0),
+        [...leftCount.entries()].reduce((sum, [left, value]) => sum + left * value * (rightCount.get(left) || 0), 0),
     ];
 };
