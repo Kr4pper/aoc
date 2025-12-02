@@ -15,7 +15,7 @@ const template = `export default (rawInput: string): [(number | string)?, (numbe
 `;
 
 const parser = new ArgumentParser();
-parser.add_argument('-y', '--year', {default: new Date().getFullYear()});
+parser.add_argument('-y', '--year', {default: new Date().getFullYear().toString()});
 parser.add_argument('-d', '--day', {required: true});
 
 (async () => {
