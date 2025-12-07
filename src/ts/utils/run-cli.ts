@@ -3,7 +3,7 @@ import {run} from './run';
 
 const parser = new ArgumentParser();
 parser.add_argument('-y', '--year', {default: new Date().getFullYear()});
-parser.add_argument('-d', '--day', {default: new Date().getDay()});
+parser.add_argument('-d', '--day', {default: new Date().getDate()});
 parser.add_argument('-s', '--sample', {default: false, action: 'store_const', const: true});
 
 (() => {

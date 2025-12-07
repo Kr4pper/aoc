@@ -16,11 +16,13 @@ const template = `export default (rawInput: string): [(number | string)?, (numbe
 
 const parser = new ArgumentParser();
 parser.add_argument('-y', '--year', {default: new Date().getFullYear().toString()});
-parser.add_argument('-d', '--day', {required: true});
+parser.add_argument('-d', '--day', {default: new Date().getDate().toString()});
 
 (async () => {
     const {year, day: _day} = parser.parse_args();
     const day = toDay(_day);
+
+    console.log(`Initializing setup for year ${year} day ${day}`);
 
     const inputDir = join(__dirname, '..', '..', 'input', year);
     if (!existsSync(inputDir)) {
