@@ -1,4 +1,4 @@
-import {Grid2D, memoize, memoizeBy} from '../utils';
+import {Grid2D, memoizeBy} from '../utils';
 
 export default (rawInput: string): [(number | string)?, (number | string)?] => {
     const input = rawInput.split('\n').map(line => line.split(''));
@@ -42,16 +42,13 @@ export default (rawInput: string): [(number | string)?, (number | string)?] => {
             if (x < 0 || x > grid.height) return 0;
             if (y === grid.height) return 1;
 
-            if (grid.get(x, y) === '^') {
-                return getRecursiveSplits([x - 1, y + 1]) + getRecursiveSplits([x + 1, y + 1]);
-            }
-            else {
-                return getRecursiveSplits([x, y + 1]);
-            }
+            return grid.get(x, y) === '^'
+                ? getRecursiveSplits([x - 1, y + 1]) + getRecursiveSplits([x + 1, y + 1])
+                : getRecursiveSplits([x, y + 1]);
         });
 
     return [
         splits, // 1698
-        getRecursiveSplits(start),
+        getRecursiveSplits(start), // 95408386769474
     ];
 };
