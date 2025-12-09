@@ -39,16 +39,21 @@ export class Grid2D<T> {
         return `${Grid2D.name} [w: ${this.width}, h: ${this.height}]`;
     }
 
+    isValid(x: number, y: number) {
+        if (x < 0 || x > this.width - 1) return false;
+        if (y < 0 || y > this.height - 1) return false;
+
+        return true;
+    }
+
     get(x: number, y: number) {
-        if (x < 0 || x > this.width - 1) return;
-        if (y < 0 || y > this.height - 1) return;
+        if (!this.isValid(x, y)) return;
 
         return this.#data[x + y * this.#offset];
     }
 
     set(x: number, y: number, value: T) {
-        if (x < 0 || x > this.width - 1) return;
-        if (y < 0 || y > this.height - 1) return;
+        if (!this.isValid(x, y)) return;
 
         this.#data[x + y * this.#offset] = value;
     }
